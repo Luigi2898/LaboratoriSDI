@@ -26,20 +26,16 @@ architecture Behavioural of CU is
 
 begin
 
-  Ball_diagram : process(clock, data_valid, rst)
+  FSM : process(clock, data_valid, rst)
   begin
 
     if (clock'event and clock = '1') then
       if (rst = '0') then
         state <= RESET;
-      end if;
+      else
       case (state) is
         when RESET =>
-          if (rst = '0') then
-            state <= RESET;
-          else
             state <= IDLE;
-          end if;
         when IDLE =>
           if (data_valid = '0') then
             state <= IDLE;
@@ -63,7 +59,33 @@ begin
 
       end case;
     end if;
+    end if;
 
+  end process;
+
+  output_control : process(state)
+  begin
+    dp_rst    <= '1';
+    baud_cnt  <= '0';
+    shift_cnt <= '0';
+    shift_en  <= '0';
+    load_en   <= '0';
+    read_en   <= '1';
+    txready   <= '1';
+      case (state) is
+        when RESET =>
+          dp_rst   <= '0';
+          shift_en <= '1';
+        when IDLE =>
+          load_en <= '1';
+        when TRANSMIT =>
+          shift_en  <= '1';
+          shift_cnt <= '1';
+          txready   <= '0';
+        when BUSY =>
+          baud_cnt <= '1';
+          txready <= '0';
+      end case;
   end process;
 
 end architecture;
