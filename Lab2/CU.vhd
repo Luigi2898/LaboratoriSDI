@@ -32,14 +32,10 @@ begin
     if (clock'event and clock = '1') then
       if (rst = '0') then
         state <= RESET;
-      end if;
+      else
       case (state) is
         when RESET =>
-          if (rst = '0') then
-            state <= RESET;
-          else
             state <= IDLE;
-          end if;
         when IDLE =>
           if (data_valid = '0') then
             state <= IDLE;
@@ -62,6 +58,7 @@ begin
           state <= RESET;
 
       end case;
+    end if;
     end if;
 
   end process;
