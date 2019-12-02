@@ -8,7 +8,7 @@ entity DP is
   rst :  in std_logic;
   clock : in std_logic;
   eninput : in std_logic;
-  startbit : in std_logic;
+  startbit : out std_logic;
   en_out_reg : in std_logic;
   dataout : out std_logic_vector(7 downto 0);
   baud_en : in std_logic;
@@ -63,16 +63,14 @@ architecture behavioural of DP is
   signal to_logic : std_logic_vector(7 downto 0);
   signal vote : std_logic;
   signal in1, in2, in3 : std_logic;
-  signal winner : std_logic;
-  signal start_bit : std_logic;
 
 begin
   baud_counter : n_counter GENERIC MAP(12, 2604) port map(clock, baud_en, rst, baud_end, baud_count_out);
   frame_counter : n_counter GENERIC MAP(3 , 7) port map(clock, frame_en, rst, frame_end, frame_count_out);
   input_reg : SERIAL2PARALLEL GENERIC MAP(8) port map(clock, rst, eninput, Rx, to_logic);
   output_reg : SERIAL2PARALLEL GENERIC MAP(8) PORT MAP(clock, rst, en_out_reg , vote , dataout);
-  votatore : voter Port map(to_logic(3), to_logic(4), to_logic(5), winner);
-  s_bit_f : StartBitFinder port map(to_logic, start_bit);
+  votatore : voter Port map(to_logic(3), to_logic(4), to_logic(5), vote);
+  s_bit_f : StartBitFinder port map(to_logic, startbit);
 
 
 end architecture;
