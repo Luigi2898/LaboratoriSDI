@@ -1,14 +1,14 @@
 library ieee;
   use ieee.std_logic_1164.all;
 
-entity  is
+entity  RX is
   port (
   clk : in std_logic;
   rst : in std_logic;
   rx : in std_logic;
   rd : in std_logic;
-  data : out std_logic_vextor(7 downto 0);
-  dav : out std_logic;
+  data : out std_logic_vector(7 downto 0);
+  dav : out std_logic
   );
 end entity;
 
@@ -51,12 +51,12 @@ architecture behavioural of RX is
   signal  baud_en : std_logic;
   signal baud_end : std_logic;
   signal  frame_en : std_logic;
-  signal frame_end : std_logic
+  signal frame_end : std_logic;
   signal dp_reset : std_logic;
 
 begin
 
   dadatapath : dp port map(rx, dp_reset, clk, eninput, startbit, en_out_reg, data, baud_en, baud_end, frame_en, frame_end);
   control_unit : cu_RX port map(clk, rst, startbit, dav, dp_reset, rd, baud_en, baud_end, frame_en, frame_end, eninput, en_out_reg);
-  
+
 end architecture;
