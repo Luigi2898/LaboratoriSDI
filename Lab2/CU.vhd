@@ -21,7 +21,7 @@ end entity;
 
 architecture Behavioural of CU is
 
-  type state_type is (RESET, IDLE, TRANSMIT, BUSY);
+  type state_type is (RESET, IDLE, LOAD, TRANSMIT, BUSY);
   signal state : state_type;
 
 begin
@@ -40,8 +40,10 @@ begin
           if (data_valid = '0') then
             state <= IDLE;
           else
-            state <= TRANSMIT;
+            state <= LOAD;
           end if;
+        when LOAD =>
+          state <= TRANSMIT;
         when TRANSMIT =>
           state <= BUSY;
         when BUSY =>
@@ -75,8 +77,10 @@ begin
       case (state) is
         when RESET =>
           dp_rst   <= '0';
-          shift_en <= '1';
+
         when IDLE =>
+          shift_en <= '1';
+        when LOAD =>
           load_en <= '1';
         when TRANSMIT =>
           shift_en  <= '1';
