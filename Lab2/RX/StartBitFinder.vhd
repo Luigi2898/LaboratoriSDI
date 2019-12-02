@@ -12,6 +12,6 @@ architecture behavioural of StartBitFinder is
 
   begin
 
-  startbit <= frame(7) and frame(6) and frame(5) and frame(4) and not(frame(3)) and not(frame(2)) and not(frame(1)) and not(frame(0));
+  startbit <= frame(3) and frame(2) and frame(1) and frame(0) and not(frame(7)) and not(frame(6)) and not(frame(5)) and not(frame(4));
 
 end architecture;
