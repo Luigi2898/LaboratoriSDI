@@ -1,7 +1,8 @@
 library ieee;
   use ieee.std_logic_1164.all;
+  use ieee.NUMERIC_STD.all;
 
-entity datapath is
+entity DP is
   port (
   RX : in std_logic;
   rst :  in std_logic;
@@ -17,7 +18,7 @@ entity datapath is
   );
 end entity;
 
-architecture behavioural of datapath is
+architecture behavioural of DP is
 
   component N_COUNTER IS
   		GENERIC(N : INTEGER:= 12; MODULE : INTEGER:= 2604);
@@ -30,7 +31,7 @@ architecture behavioural of datapath is
   END component;
 
   component SERIAL2PARALLEL IS
-  GENERIC(N:integer)
+  GENERIC(N:integer);
   	PORT(CLK        : IN STD_LOGIC;
   		 RST        : IN STD_LOGIC;
   		 EN         : IN STD_LOGIC;
@@ -57,8 +58,8 @@ architecture behavioural of datapath is
     );
   end component;
 
-  signal baud_count_out : std_logic_vector(11 downto 0);
-  signal frame_count_out : std_logic_vector(2 downto 0);
+  signal baud_count_out : UNSIGNED(11 downto 0);
+  signal frame_count_out : UNSIGNED(2 downto 0);
   signal to_logic : std_logic_vector(7 downto 0);
   signal vote : std_logic;
   signal in1, in2, in3 : std_logic;
@@ -68,7 +69,7 @@ architecture behavioural of datapath is
 begin
   baud_counter : n_counter GENERIC MAP(12, 2604) port map(clock, baud_en, rst, baud_end, baud_count_out);
   frame_counter : n_counter GENERIC MAP(3 , 7) port map(clock, frame_en, rst, frame_end, frame_count_out);
-  input_reg : SERIAL2PARALLEL GENERIC MAP(8) port map(clock, rst, enimput, Rx, to_logic);
+  input_reg : SERIAL2PARALLEL GENERIC MAP(8) port map(clock, rst, eninput, Rx, to_logic);
   output_reg : SERIAL2PARALLEL GENERIC MAP(8) PORT MAP(clock, rst, en_out_reg , vote , dataout);
   votatore : voter Port map(to_logic(3), to_logic(4), to_logic(5), winner);
   s_bit_f : StartBitFinder port map(to_logic, start_bit);
