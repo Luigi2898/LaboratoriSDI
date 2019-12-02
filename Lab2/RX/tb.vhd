@@ -43,6 +43,7 @@ begin
     rst <= '1';
     wait for 21 ns;
     rst <= '0';
+    
   end process;
 
   rd <= '0';
