@@ -33,6 +33,21 @@ architecture Behavioural of UART is
     );
   end component;
   
-  begin
+  component TX IS
+	 PORT(
+     CLOCK       : IN STD_LOGIC;
+		 RST         : IN STD_LOGIC;
+		 DATA_IN     : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+		 TX          : OUT STD_LOGIC;
+		 DATA_VALID  : IN STD_LOGIC;
+		 TXREADY     : OUT STD_LOGIC	
+	 );
+  END component;
   
+  begin
+    
+    Receiver    : RX port map(clock, resteN, rx, rd, data_out, dav);
+    Transmitter : TX port map(clock, resetN, data_in, tx, wr, tx_ready);
+  
+    
 end architecture;
