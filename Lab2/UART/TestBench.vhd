@@ -42,5 +42,33 @@ begin
 
   UART1 : UART port map (data_in1, tx, tx_ready1, wr1, data_out1, rx, rd1, dav1, clock, resetN1);
   UART2 : UART port map (data_in2, tx, tx_ready2, wr2, data_out2, rx, rd2, dav2, clock, resetN2);
+    
+  clk_proc : process
+    begin
+      wait for 20 ns;
+      clock <= '1';
+      wait for 20 ns;
+      clock <= '0';
+  end process;
+  
+  rst_proc1 : process
+    begin
+      resetN1 <= '1';
+      wait for 5 ns;
+      resetN1 <= '0';
+      wait for 25 ns;
+      resetN1 <= '1';
+      wait for 80 sec;
+  end process;
 
+  rst_proc2 : process
+    begin
+      resetN2 <= '1';
+      wait for 25 ns;
+      resetN2 <= '0';
+      wait for 45 ns;
+      resetN2 <= '1';
+      wait for 80 sec;
+  end process;
+        
 end architecture
