@@ -21,7 +21,18 @@ entity UART is
 end entity;
  
 architecture Behavioural of UART is
-   
+  
+  component RX is
+    port (
+      clk : in std_logic;
+      rst : in std_logic;
+      rx : in std_logic;
+      rd : in std_logic;
+      data : out std_logic_vector(7 downto 0);
+      dav : out std_logic
+    );
+  end component;
+  
   begin
   
 end architecture;
