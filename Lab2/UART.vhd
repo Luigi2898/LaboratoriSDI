@@ -15,13 +15,13 @@ entity UART is
     dav      : out std_logic;
     
     clock    : in std_logic;
-    resetN   : in std_logic;
-    )
+    resetN   : in std_logic
+    );
   
 end entity;
  
 architecture Behavioural of UART is
    
-  
+  begin
   
 end architecture;
