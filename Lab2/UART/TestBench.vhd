@@ -36,7 +36,7 @@ architecture beh of TestBench is
   signal dav1, dav2            : std_logic;
     
   signal clock                 : std_logic;
-  signal resetN1, resetN2      : std_logic
+  signal resetN1, resetN2      : std_logic;
 
 begin
 
@@ -71,4 +71,4 @@ begin
       wait;
   end process;
         
-end architecture
+end architecture;
