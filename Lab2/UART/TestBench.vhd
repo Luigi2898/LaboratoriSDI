@@ -27,7 +27,7 @@ architecture beh of TestBench is
 
   signal data_in1, data_in2    : std_logic_vector (7 downto 0);
   signal tx                    : std_logic;
-  signal tx_ready1, tx_ready 2 : std_logic;
+  signal tx_ready1, tx_ready2  : std_logic;
   signal wr1, wr2              : std_logic;
     
   signal data_out1, data_out2  : std_logic_vector (7 downto 0);
@@ -41,7 +41,7 @@ architecture beh of TestBench is
 begin
 
   UART1 : UART port map (data_in1, tx, tx_ready1, wr1, data_out1, rx, rd1, dav1, clock, resetN1);
-  UART2 : UART port map (data_in2, tx, tx_ready2, wr2, data_out2, rx, rd2, dav2, clock, resetN2);
+  UART2 : UART port map (data_in2, rx, tx_ready2, wr2, data_out2, tx, rd2, dav2, clock, resetN2);
     
   clk_proc : process
     begin
