@@ -10,12 +10,12 @@ architecture beh of TestBench is
   
     port(
       data_in  : in std_logic_vector (7 downto 0);
-      tx       : out std_logic;
+      tx_pin       : out std_logic;
       tx_ready : out std_logic;
       wr       : in std_logic;
     
       data_out : out std_logic_vector (7 downto 0);
-      rx       : in std_logic;
+      rx_pin       : in std_logic;
       rd       : in std_logic;
       dav      : out std_logic;
     
