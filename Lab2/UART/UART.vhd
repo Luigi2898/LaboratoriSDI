@@ -1,16 +1,16 @@
 library ieee;
-use ieee.std_logic_vector.all;
+use ieee.std_logic_1164.all;
 
 entity UART is
   
   port(
     data_in  : in std_logic_vector (7 downto 0);
-    tx       : out std_logic;
+    tx_pin       : out std_logic;
     tx_ready : out std_logic;
     wr       : in std_logic;
     
     data_out : out std_logic_vector (7 downto 0);
-    rx       : in std_logic;
+    rx_pin       : in std_logic;
     rd       : in std_logic;
     dav      : out std_logic;
     
@@ -46,8 +46,8 @@ architecture Behavioural of UART is
   
   begin
     
-    Receiver    : RX port map(clock, resteN, rx, rd, data_out, dav);
-    Transmitter : TX port map(clock, resetN, data_in, tx, wr, tx_ready);
+    Receiver    : RX port map(clock, resetN, rx_pin, rd, data_out, dav);
+    Transmitter : TX port map(clock, resetN, data_in, tx_pin, wr, tx_ready);
   
     
 end architecture;
