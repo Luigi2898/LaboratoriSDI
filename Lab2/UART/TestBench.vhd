@@ -58,7 +58,7 @@ begin
       resetN1 <= '0';
       wait for 25 ns;
       resetN1 <= '1';
-      wait for 80 sec;
+      wait;
   end process;
 
   rst_proc2 : process
@@ -68,7 +68,7 @@ begin
       resetN2 <= '0';
       wait for 45 ns;
       resetN2 <= '1';
-      wait for 80 sec;
+      wait;
   end process;
         
 end architecture
