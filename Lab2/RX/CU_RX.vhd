@@ -13,6 +13,7 @@ ENTITY CU_RX IS
 		 BAUD_END       : IN  STD_LOGIC;
 		 FRAME_EN       : OUT STD_LOGIC;
 		 FRAME_END      : IN STD_LOGIC;
+		 FRAME_RST      : OUT STD_LOGIC;
 	     ENABLE_INPUT   : OUT STD_LOGIC;
 		 ENABLE_OUTPUT  : OUT STD_LOGIC
 	);
@@ -68,6 +69,7 @@ END PROCESS;
 output_control : process(state)
      begin
 	 DP_RST <= '1';
+	 FRAME_RST <= '1';
 	 ENABLE_INPUT <= '1';
 	 ENABLE_OUTPUT <= '0';
 	 BAUD_EN <= '0';
@@ -77,7 +79,9 @@ output_control : process(state)
 	 CASE(STATE) IS
 	    WHEN RESET =>
 		 DP_RST <= '0';
+		 FRAME_RST <= '0';
 		WHEN IDLE =>
+			FRAME_RST <= '0';
 		WHEN BUSY =>
 		 BAUD_EN <= '1';
 		WHEN RECEIVE =>
