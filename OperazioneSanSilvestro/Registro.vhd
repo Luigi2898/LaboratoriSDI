@@ -24,11 +24,13 @@ begin
      DataOut <= (others => '0');
 
   elsif (clock' event and clock = '1') then
+
     if (DataIn = (others => 'Z')) then
 
      DataOut <= DataIn;
 
     end if;
+
   end if;
 
 end process;
