@@ -18,7 +18,7 @@ architecture behavioural of  Registro is
 begin
 
 process(clock, reset)
-
+begin
   if (reset = '0') then
 
      DataOut <= (others => '0');
