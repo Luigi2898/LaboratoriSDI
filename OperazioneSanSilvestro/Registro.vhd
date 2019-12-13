@@ -2,7 +2,7 @@ library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
 
-entity Nbitregister is
+entity Registro is
   generic(Nbit : integer := 8);
   port (
 
@@ -13,7 +13,7 @@ entity Nbitregister is
   );
 end entity;
 
-architecture behavioural of  Nbitregister is
+architecture behavioural of  Registro is
 
 begin
 
