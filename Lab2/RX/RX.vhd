@@ -24,6 +24,7 @@ architecture behavioural of RX is
   		 BAUD_END       : IN  STD_LOGIC;
   		 FRAME_EN       : OUT STD_LOGIC;
   		 FRAME_END      : IN STD_LOGIC;
+       frame_rst : out std_logic;
   	     ENABLE_INPUT   : OUT STD_LOGIC;
   		 ENABLE_OUTPUT  : OUT STD_LOGIC
   	);
@@ -41,7 +42,8 @@ architecture behavioural of RX is
     baud_en : in std_logic;
     baud_end : out std_logic;
     frame_en : in std_logic;
-    frame_end : out std_logic
+    frame_end : out std_logic;
+    frame_rst : in std_logic
     );
   end component;
 
@@ -53,10 +55,11 @@ architecture behavioural of RX is
   signal  frame_en : std_logic;
   signal frame_end : std_logic;
   signal dp_reset : std_logic;
+  signal frame_rst : std_logic;
 
 begin
 
-  dadatapath : dp port map(rx, dp_reset, clk, eninput, startbit, en_out_reg, data, baud_en, baud_end, frame_en, frame_end);
-  control_unit : cu_RX port map(clk, rst, startbit, dav, dp_reset, rd, baud_en, baud_end, frame_en, frame_end, eninput, en_out_reg);
+  dadatapath : dp port map(rx, dp_reset, clk, eninput, startbit, en_out_reg, data, baud_en, baud_end, frame_en, frame_end, frame_rst);
+  control_unit : cu_RX port map(clk, rst, startbit, dav, dp_reset, rd, baud_en, baud_end, frame_en, frame_end, frame_rst, eninput, en_out_reg);
 
 end architecture;
