@@ -24,7 +24,7 @@ begin
      DataOut <= (others => '0');
 
   elsif (clock' event and clock = '1') then
-    if (not(DataIn = 'Z')) then
+    if (not(DataIn = (others => 'Z'))) then
 
      DataOut <= DataIn;
 
