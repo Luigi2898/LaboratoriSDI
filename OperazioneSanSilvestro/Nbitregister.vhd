@@ -7,7 +7,7 @@ entity Nbitregister is
   port (
 
    DataIn  : in std_logic_vector(Nbit-1 downto 0);
-   DataOut : out std_logic_vector(Nbit-1 downto 0)
+   DataOut : out std_logic_vector(Nbit-1 downto 0);
    clock   : in std_logic;
    reset   : in std_logic
   );
@@ -30,7 +30,7 @@ process(clock, reset)
 
     end if;
   end if;
-  
+
 end process;
 
 
