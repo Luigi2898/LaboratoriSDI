@@ -18,27 +18,25 @@ end entity;
 
 architecture behavioural of Bas is
 
+  component TRISTATE IS
+  	GENERIC(N : INTEGER := 1);
+  	PORT(
+      D_IN  : IN STD_LOGIC_VECTOR(N-1 DOWNTO 0);
+  		D_OUT : OUT STD_LOGIC_VECTOR(N-1 DOWNTO 0);
+  		EN    : IN STD_LOGIC
+  	);
+  END component;
+
   signal internalBus : std_logic_vector(Parallelism - 1 downto 0);
 
 begin
-  boos : process(inputEnable, outputEnable)
-      begin
-      for i in 0 to Ninput - 1 loop
-        if (inputEnable(i) = '1') then
-          internalBus <= ins(Parallelism * (i + 1) - 1 downto Parallelism * i);
-        else
-          internalBus <= (others => 'Z');
-        end if;
-      end loop;
 
-      for i in 0 to Noutput - 1 loop
-        if (outputEnable(i) = '1') then
-          outs(Parallelism * (i + 1) - 1 downto Parallelism * i) <= internalBus;
-        else
-          outs(Parallelism * (i + 1) - 1 downto Parallelism * i) <= (others => 'Z');
-        end if;
-      end loop;
-    end process;
+  ingen : for i in 0 to Ninput - 1 generate
+    intri : TRISTATE generic map(Parallelism) port map(ins(Parallelism * (i + 1) - 1 downto Parallelism * i), internalBus, inputEnable(i));
+  end generate;
 
+  outgen : for i in 0 to Noutput - 1 generate
+    outtri : TRISTATE generic map(Parallelism) port map(internalBus, outs(Parallelism * (i + 1) - 1 downto Parallelism * i), outputEnable(i));
+  end generate;
 
 end architecture;
