@@ -15,8 +15,6 @@ end entity;
 architecture behavioural of  Registro is
 
 signal zeta: std_logic_vector(Nbit-1 downto 0) := (others => 'Z');
-
-
 begin
 
 process(clock, reset)
@@ -28,7 +26,6 @@ begin
      DataOut <= DataIn;
     end if;
   end if;
-
 end process;
 
 
