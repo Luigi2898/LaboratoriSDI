@@ -15,14 +15,14 @@ entity sub is
 end entity;
 
 architecture behavioural of sub is
-signal zeta: std_logic_vector(Nbit-1 downto 0) := (others => 'Z');
+--signal zeta: std_logic_vector(Nbit-1 downto 0) := (others => 'Z');
 begin
 
 process (data_1, data_2)
 begin
-if ((not(data_1= zeta)) and (not(data_2= zeta))) then
-  sub <= data_1+data_2;
-end if;
+--if ((not(data_1= zeta)) and (not(data_2= zeta))) then
+  sub <= data_1-data_2;
+--end if;
 end process;
 
 
