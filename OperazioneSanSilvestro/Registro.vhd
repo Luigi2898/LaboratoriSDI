@@ -25,6 +25,7 @@ begin
     if (not(DataIn = zeta)) then
      DataOut <= DataIn;
     end if;
+
   end if;
 end process;
 
