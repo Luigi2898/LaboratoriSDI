@@ -4,18 +4,18 @@ USE IEEE.NUMERIC_STD.ALL;
 
 ENTITY CU_RX IS
 	PORT(CLOCK          : IN STD_LOGIC;
-         RST            : IN STD_LOGIC;
-		 S_BIT          : IN STD_LOGIC;
-		 DATA_VALID     : OUT STD_LOGIC;
-		 DP_RST         : OUT STD_LOGIC;
-		 RD             : IN STD_LOGIC;
-		 BAUD_EN        : OUT STD_LOGIC;
-		 BAUD_END       : IN  STD_LOGIC;
-		 FRAME_EN       : OUT STD_LOGIC;
-		 FRAME_END      : IN STD_LOGIC;
-		 FRAME_RST      : OUT STD_LOGIC;
+             RST            : IN STD_LOGIC;
+             S_BIT          : IN STD_LOGIC;
+             DATA_VALID     : OUT STD_LOGIC;
+	     DP_RST         : OUT STD_LOGIC;
+	     RD             : IN STD_LOGIC;
+	     BAUD_EN        : OUT STD_LOGIC;
+       	     BAUD_END       : IN  STD_LOGIC;
+	     FRAME_EN       : OUT STD_LOGIC;
+	     FRAME_END      : IN STD_LOGIC;
+	     FRAME_RST      : OUT STD_LOGIC;
 	     ENABLE_INPUT   : OUT STD_LOGIC;
-		 ENABLE_OUTPUT  : OUT STD_LOGIC
+	     ENABLE_OUTPUT  : OUT STD_LOGIC
 	);
 END ENTITY;
 
@@ -32,42 +32,42 @@ FSM : PROCESS(CLOCK, RST, RD, S_BIT, FRAME_END, BAUD_END)
       IF (RST = '0') THEN
         STATE <= RESET;
       ELSE
-      CASE (STATE) IS
-        WHEN RESET =>
+        CASE (STATE) IS
+          WHEN RESET =>
             STATE <= IDLE;
-        WHEN IDLE =>
-     		 IF(S_BIT = '0') THEN
-			     STATE <= IDLE;
-			 ELSE
-			     STATE <= BUSY;
-			 END IF;
-		WHEN BUSY =>
-			 IF(BAUD_END = '0') THEN
-			     STATE <= BUSY;
-			 ELSE
-			     STATE <= RECEIVE;
-			 END IF;
-	    WHEN RECEIVE =>
-			 IF(FRAME_END = '1') THEN
-				 STATE <= DAV;
-			 ELSE
-				 STATE <= BUSY;
-			 END IF;
-		WHEN DAV =>
-			 IF(RD = '0') THEN
-				 STATE <= DAV;
-			 ELSE
-				 STATE <= IDLE;
-			 END IF;
-		WHEN OTHERS =>
-		         STATE <= RESET;
-		END CASE;
-	  END IF;
-	END IF;
+          WHEN IDLE =>
+     	    IF(S_BIT = '0') THEN
+	      STATE <= IDLE;
+	    ELSE
+	      STATE <= BUSY;
+	    END IF;
+	  WHEN BUSY =>
+	    IF(BAUD_END = '0') THEN
+	      STATE <= BUSY;
+	    ELSE
+              STATE <= RECEIVE;
+	    END IF;
+	  WHEN RECEIVE =>
+	    IF(FRAME_END = '1') THEN
+	      STATE <= DAV;
+	    ELSE
+	      STATE <= BUSY;
+	    END IF;
+	  WHEN DAV =>
+	    IF(RD = '0') THEN
+	      STATE <= DAV;
+	    ELSE
+	      STATE <= IDLE;
+	    END IF;
+	  WHEN OTHERS =>
+            STATE <= RESET;
+	  END CASE;
+        END IF;
+      END IF;
 END PROCESS;
 
 output_control : process(state)
-     begin
+  begin
 	 DP_RST <= '1';
 	 FRAME_RST <= '1';
 	 ENABLE_INPUT <= '1';
