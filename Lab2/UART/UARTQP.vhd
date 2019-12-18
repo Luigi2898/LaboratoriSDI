@@ -16,25 +16,25 @@ end entity;
 architecture beh of UARTQP is
 
   component UART is
-  
+
     port(
       data_in  : in std_logic_vector (7 downto 0);
       tx_pin       : out std_logic;
       tx_ready : out std_logic;
       wr       : in std_logic;
-    
+
       data_out : out std_logic_vector (7 downto 0);
       rx_pin       : in std_logic;
       rd       : in std_logic;
       dav      : out std_logic;
-    
+
       clock    : in std_logic;
       resetN   : in std_logic
     );
-  
+
   end component;
-  
-  
+
+
 component pll is
 	port (
 		refclk   : in  std_logic := '0'; --  refclk.clk
@@ -44,22 +44,22 @@ component pll is
 	);
 end component pll;
 
-component RisingEdge_DFlipFlop is 
+component RisingEdge_DFlipFlop is
    port(
-      Q : out std_logic;    
-      Clk :in std_logic;   
-      D :in  std_logic    
+      Q : out std_logic;
+      Clk :in std_logic;
+      D :in  std_logic
    );
 end component RisingEdge_DFlipFlop;
 
   signal tx, rd                    : std_logic;
   signal tx_ready  : std_logic;
-    
+
   signal wr : std_logic ;
-  
+
   signal d, d1 : std_logic;
   signal q, q1 : std_logic;
-  
+
   signal clock, outclk_0, locked  : std_logic;
   signal resetN1, resetN2      : std_logic;
 
@@ -68,17 +68,17 @@ begin
   UART1 : UART port map (sw(7 downto 0), tx, GPIO_0(8), wr, LEDR(7 downto 0), tx, rd, GPIO_0(16), outclk_0, KEY(2));
   GPIO_0(2) <= outclk_0;
   GPIO_0(34) <= wr;
-  GPIO_0(22) <= tx; 
+  GPIO_0(22) <= tx;
   GPIO_0(10) <= rd;
   --GPIO_0(10) <= KEY(2);
-  
+
   pllll : pll port map(CLOCK_50, not(KEY(2)), outclk_0, locked);
-  
+
   ff : RisingEdge_DFlipFlop port map(q, outclk_0, d);
   ff1 : RisingEdge_DFlipFlop port map(q1, outclk_0, d1);
-  
+
   keypropc1 : process(key(0), outclk_0)
-  
+
   begin
 	if(key(0)'event and key(0) = '0') then
 		if (outclk_0 = '1') then
@@ -91,9 +91,9 @@ begin
 		d <= '0';
 	end if;
   end process;
-  
+
   keypropc2 : process(key(1), outclk_0)
-  
+
   begin
 	if(key(1)'event and key(1) = '0') then
 		if (outclk_0 = '1') then
@@ -106,7 +106,7 @@ begin
 		d1 <= '0';
 	end if;
   end process;
-  
 
-        
+
+
 end architecture;
