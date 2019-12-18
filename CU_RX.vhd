@@ -21,19 +21,19 @@ END ENTITY;
 
 ARCHITECTURE BEH OF CU_RX IS
 
-TYPE STATE_TYPE IS (RESET, IDLE, BUSY, RECEIVE, DAV);
+TYPE STATE_TYPE IS (RST_S, IDLE, BUSY, RECEIVE, DAV);
 SIGNAL STATE : STATE_TYPE;
 
 BEGIN
 
-FSM : PROCESS(CLOCK, RST, RD, S_BIT, FRAME_END, BAUD_END)
+FSM : PROCESS(CLOCK)
   BEGIN
     IF (CLOCK'EVENT AND CLOCK = '1') THEN
       IF (RST = '0') THEN
-        STATE <= RESET;
+        STATE <= RST_S;
       ELSE
       CASE (STATE) IS
-        WHEN RESET =>
+        WHEN RST_S =>
             STATE <= IDLE;
         WHEN IDLE =>
      		 IF(S_BIT = '0') THEN
@@ -60,7 +60,7 @@ FSM : PROCESS(CLOCK, RST, RD, S_BIT, FRAME_END, BAUD_END)
 				 STATE <= IDLE;
 			 END IF;
 		WHEN OTHERS =>
-		         STATE <= RESET;
+		         STATE <= RST_S;
 		END CASE;
 	  END IF;
 	END IF;
@@ -77,7 +77,7 @@ output_control : process(state)
 	 DATA_VALID <= '0';
 
 	 CASE(STATE) IS
-	    WHEN RESET =>
+	    WHEN RST_S =>
 		 DP_RST <= '0';
 		 FRAME_RST <= '0';
 		WHEN IDLE =>
