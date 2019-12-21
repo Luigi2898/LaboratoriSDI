@@ -4,9 +4,7 @@ library ieee;
 
 entity uROM is
   port (
-    clk     : in std_logic;
     address : in std_logic_vector(3 downto 0); --cod. connessioni _ moltipicazione _ ROM rounding _ reset
-    chip_s  : in std_logic;
     data    : out std_logic_vector(6 downto 0)
   );
 end entity;
