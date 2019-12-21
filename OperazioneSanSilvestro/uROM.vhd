@@ -17,24 +17,24 @@ begin
 
   uROM : process(clk)
   begin
-    if (clk'event and clk = '1')
+    if (clk'event and clk = '1') then
       if (chip_s = '1') then
-        case( address ) is
+        case (address) is
 
-          when '0000' => data <= address & '0' & '0' & '0';
-          when '0001' => data <= address & '1' & '0' & '1';
-          when '0010' => data <= address & '0' & '0' & '1';
-          when '0011' => data <= address & '1' & '0' & '1';
-          when '0100' => data <= address & '0' & '0' & '1';
-          when '0110' => data <= address & '0' & '0' & '1';
-          when '0101' => data <= address & '0' & '0' & '1';
-          when '0111' => data <= address & '0' & '0' & '1';
-          when '1000' => data <= address & '0' & '0' & '1';
-          when '1001' => data <= address & '0' & '1' & '1';
-          when '1010' => data <= address & '0' & '1' & '1';
-          when '1011' => data <= address & '0' & '1' & '1';
-          when '1100' => data <= address & '0' & '1' & '1';
-          when others => data <= (others <= '0');
+          when "0000"   => data <= address & '0' & '0' & '0';
+          when "0001"   => data <= address & '1' & '0' & '1';
+          when "0010"   => data <= address & '0' & '0' & '1';
+          when "0011"   => data <= address & '1' & '0' & '1';
+          when "0100"   => data <= address & '0' & '0' & '1';
+          when "0110"   => data <= address & '0' & '0' & '1';
+          when "0101"   => data <= address & '0' & '0' & '1';
+          when "0111"   => data <= address & '0' & '0' & '1';
+          when "1000"   => data <= address & '0' & '0' & '1';
+          when "1001"   => data <= address & '0' & '1' & '1';
+          when "1010"   => data <= address & '0' & '1' & '1';
+          when "1011"  => data <= address & '0' & '1' & '1';
+          when "1100"   => data <= address & '0' & '1' & '1';
+          when others => data <= (others => '0');
 
         end case;
       end if;
