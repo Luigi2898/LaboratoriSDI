@@ -14,10 +14,10 @@ architecture behavioural of uROM is
   type mem is array (0 to 12) of std_logic_vector(6 downto 0);
   constant rom : mem :=(
   "0000000",
-  "0001101",
-  "0010001",
-  "0011101",
-  "0100001",
+  "0001001",
+  "0010101",
+  "0011001",
+  "0100101",
   "0101001",
   "0110001",
   "0111001",
