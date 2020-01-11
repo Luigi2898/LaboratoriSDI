@@ -2,7 +2,6 @@ import serial
 from serial import Serial
 out_file = open("test.txt","w")
 porta = serial.Serial("COM5", 9600, 8, "N", 1, timeout=1)
-porta.write(b'test')
 i = 1
 while i:
     try:
