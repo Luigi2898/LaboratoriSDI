@@ -23,12 +23,14 @@ architecture behavioural of uSequencer is
     );
   end component;
 
-  signal uAR : integer;
-  signal uIR1 : std_logic_vector(6 downto 0);
+  signal uAR   : integer;
+  signal uIR1  : std_logic_vector(6 downto 0);
+  signal uAR_slv : std_logic_vector (3 downto 0);
 
 begin
-
-  uuROM : uROM port map(std_logic_vector(to_unsigned(uAR, 4)), uIR1);
+  
+  uAR_slv <= std_logic_vector(to_unsigned(uAR, 4));
+  uuROM : uROM port map(uAR_slv, uIR1);
 
   seq : process(clk)
     begin
