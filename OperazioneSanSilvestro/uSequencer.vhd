@@ -23,22 +23,29 @@ architecture behavioural of uSequencer is
     );
   end component;
 
-  signal uAR : integer;
-  signal uIR1 : std_logic_vector(6 downto 0);
+  signal uAR   : integer;
+  signal uIR1  : std_logic_vector(6 downto 0);
+  signal uAR_slv : std_logic_vector (3 downto 0);
 
 begin
 
-  uuROM : uROM port map(std_logic_vector(to_unsigned(uAR, 4)), uIR1);
+  uAR_slv <= std_logic_vector(to_unsigned(uAR, 4));
+  uuROM : uROM port map(uAR_slv, uIR1);
 
   seq : process(clk)
     begin
-      if clk'event and clk = '1' then
+      str_nxt <= '0';
+      if clk'event and clk = '1' then --IL uAR SI AGGIORNA SUL FRONTE DI SALITA
         if rst = '0' then
           uAR  <= 0;
           uIR <= (others => '0');
+          done <= '0';
         elsif start = '1' then --DA RIVEDERE
           uAR  <= uAR + 1;
-          uIR <= uIR1;
+          done <= '0';
+        end if;
+        if not(uIR1 = "0000000") then
+          uAR  <= uAR + 1;
         end if;
       end if;
       if uAR = 12 then
@@ -47,6 +54,9 @@ begin
       end if;
       if uAR = 10 then
         str_nxt <= '1';
+      end if;
+      if clk'event and clk = '0' then --IL uIR SI AGGIORNA SUL FRONTE DI DISCESA
+        uIR <= uIR1;
       end if;
   end process;
 end architecture;
