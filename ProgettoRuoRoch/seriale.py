@@ -7,7 +7,7 @@ while i:
     try:
         out_file.write(porta.read().decode("utf-8"))
     except KeyboardInterrupt:
-        print("Esco dal ciclo")
+        print("Esco dal ciclo ;)")
         i = 0
 porta.close()
 out_file.close()
