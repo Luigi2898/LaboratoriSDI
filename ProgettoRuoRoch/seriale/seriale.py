@@ -9,6 +9,7 @@ while i:
         out_file.write(porta.read().decode("utf-8"))
 =======
 porta = serial.Serial("COM5", 9600, 8, "N", 1, timeout = 1)
+print("Apro la seriale")
 i = 1
 while i:
     try:
