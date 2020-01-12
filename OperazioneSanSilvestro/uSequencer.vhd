@@ -32,13 +32,12 @@ begin
 
   seq : process(clk)
     begin
-      if clk'event and clk = '1' then
+      if clk'event and clk = '1' then --IL uAR SI AGGIORNA SUL FRONTE DI SALITA
         if rst = '0' then
           uAR  <= 0;
           uIR <= (others => '0');
         elsif start = '1' then --DA RIVEDERE
           uAR  <= uAR + 1;
-          uIR <= uIR1;
         end if;
       end if;
       if uAR = 12 then
@@ -47,6 +46,9 @@ begin
       end if;
       if uAR = 10 then
         str_nxt <= '1';
+      end if;
+      if clk'event and clk = '0' then --IL uIR SI AGGIORNA SUL FRONTE DI DISCESA
+        uIR <= uIR1;
       end if;
   end process;
 end architecture;
