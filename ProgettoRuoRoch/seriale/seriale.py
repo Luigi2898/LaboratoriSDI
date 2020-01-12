@@ -1,11 +1,14 @@
 import serial
 from serial import Serial
 out_file = open("out1.txt","w")
-porta = serial.Serial("COM5", 9600, 8, "N", 1)
+porta = serial.Serial("COM5", 9600, 8, "N", 1, timeout = 1)
 i = 1
 while i:
     try:
-        out_file.write(porta.read().decode("utf-8"))
+        r = porta.read().decode("utf-8")
+        out_file.write(r)
+        if r != "":
+            print(r)
     except KeyboardInterrupt:
         print("Esco dal ciclo ;)")
         i = 0
