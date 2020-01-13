@@ -26,12 +26,14 @@ architecture arch of PeakNoticer is
     );
   end component;
 
-  type data is array of std_logic_vector(11 downto 0);
+  --TODO : Sei un coglione! Basta un registro, un accumulatore e un contatore fino a 500!!!!!
+
+  type data is array (499 downto 0) of std_logic_vector(11 downto 0);
   signal reginputs, regoutputs : data(499 downto 0);
 
 begin
 
-  buffer : for i in 499 to 0 generate
+  buff : for i in 499 to 0 generate
     r : Registro(reginputs(i), regoutputs(i), clk, resetN);
   end generate;
 
