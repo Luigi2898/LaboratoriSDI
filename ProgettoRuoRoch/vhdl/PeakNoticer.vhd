@@ -17,7 +17,9 @@ end entity;
 architecture arch of PeakNoticer is
 
   component Registro is
-    generic(Nbit : integer := 8);
+    generic(
+      Nbit : integer := 8
+    );
     port (
      DataIn  : in std_logic_vector(Nbit-1 downto 0);
      DataOut : out std_logic_vector(Nbit-1 downto 0);
@@ -26,15 +28,51 @@ architecture arch of PeakNoticer is
     );
   end component;
 
-  --TODO : Sei un coglione! Basta un registro, un accumulatore e un contatore fino a 500!!!!!
+  component N_COUNTER IS
+    GENERIC(
+      N      : INTEGER:= 12;
+      MODULE : INTEGER:= 2604
+    );
+    PORT(
+      CLK     : IN STD_LOGIC;
+      EN      : IN STD_LOGIC;
+      RST     : IN STD_LOGIC;
+      CNT_END : OUT STD_LOGIC;
+      CNT_OUT : BUFFER UNSIGNED(N-1 DOWNTO 0)
+    );
+  END component;
 
-  type data is array (499 downto 0) of std_logic_vector(11 downto 0);
-  signal reginputs, regoutputs : data(499 downto 0);
+--Control signals
+  signal en_cnt, rst_cnt             : std_logic; --counter
+  signal rst_buffer_reg              : std_logic; --buffer_reg
+  signal reset_accumulator           : std_logic; --accumulator
+
+--State signals
+  signal cnt_end                     : std_logic; --counter
+
+--Data signals
+  signal buffer_out                  : std_logic_vector(12 downto 0); --buffer_reg
+  signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
+
+--Dumb signals
+  signal cont_out_D                  : std_logic_vector(9 downto 0); --counter
+
+  --TODO : Sei un coglione! Basta un registro, un accumulatore e un contatore fino a 500!!!!!
 
 begin
 
-  buff : for i in 499 to 0 generate
-    r : Registro(reginputs(i), regoutputs(i), clk, resetN);
-  end generate;
+--Control unit
+
+--Datapath
+
+  counter     : n_counter generic map(9, 500)
+                          port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
+  buffer_reg  : registro generic map(12)
+                         port map(signa, buffer_out, clk, rst_buffer_reg);
+  accumulator : registro generic map(24)
+                         port map(next_energy, present_energy, clk, reset_accumulator);
+  --sommatore
+
+  --sottrattore
 
 end architecture;
