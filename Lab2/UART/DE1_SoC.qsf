@@ -628,6 +628,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_VS
 #============================================================
 # HPS
 #============================================================
+set_location_assignment PIN_C25 -to HPS_UART_TX
+set_location_assignment PIN_B25 -to HPS_UART_RX
+set_location_assignment PIN_B15 -to HPS_CONV_USB_N
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HPS_CONV_USB_N
 set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[0]
 set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[1]
@@ -950,4 +953,3 @@ set_instance_assignment -name PACKAGE_SKEW_COMPENSATION OFF -to HPS_DDR3_CK_N
 #============================================================
 # End of pin and io_standard assignments
 #============================================================
-
