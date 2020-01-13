@@ -9,7 +9,7 @@ entity PeakNoticer is
     signa  : in std_logic_vector(11 downto 0); --input signal
     peak   : out std_logic; --notifies that the treshold is overcome
     -- debug signals
-    energy : out std_logic_vector(16 downto 0); --outputs computed energy
+    energy : out std_logic_vector(24 downto 0); --outputs computed energy
     calc   : out std_logic --notifies that an energy has been computed
   );
 end entity;
@@ -52,7 +52,7 @@ architecture arch of PeakNoticer is
   component adder is
     port (
       in1, in2 : in std_logic_vector(24 downto 0);
-      res      : out std_logic_vector(25 downto 0)
+      res      : out std_logic_vector(24 downto 0)
     );
   end component;
 
@@ -65,14 +65,14 @@ architecture arch of PeakNoticer is
   signal cnt_end                     : std_logic; --counter
 
 --Data signals
-  signal buffer_out                  : std_logic_vector(12 downto 0); --buffer_reg
+  signal buffer_out                  : std_logic_vector(11 downto 0); --buffer_reg
   signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
-  signal square_out                  : std_logic_vector(24 downto 0); --sqaure
+  signal square_out                  : std_logic_vector(23 downto 0); --square
 
 --Dumb signals
-  signal cont_out_D                  : std_logic_vector(9 downto 0); --counter
+  signal cnt_out_D                   : unsigned(8 downto 0); --counter
 
-  --TODO : Sei un coglione! Basta un registro, un accumulatore e un contatore fino a 500!!!!!
+  --TODO : Sistemare i tipi!!
 
 begin
 
@@ -84,15 +84,15 @@ begin
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
   buffer_reg  : registro generic map(12)
                          port map(signa, buffer_out, clk, rst_buffer_reg);
-  accumulator : registro generic map(24)
+  accumulator : registro generic map(25)
                          port map(next_energy, present_energy, clk, reset_accumulator);
 
   squa        : square port map(buffer_out, square_out);
 
-  add         : adder port map(square_out, present_energy, next_energy);
+  add         : adder port map(square_out(23) & square_out, present_energy, next_energy);
 
 --Debug
   energy <= next_energy;
   calc <= cnt_end;
-  
+
 end architecture;
