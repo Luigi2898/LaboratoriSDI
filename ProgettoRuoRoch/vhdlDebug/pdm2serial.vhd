@@ -8,7 +8,7 @@ entity pdm2serial is
     key         : in std_logic_vector(1 downto 0);
     clock_50    : in std_logic;
     ledr        : out std_logic_vector(8 downto 0);
-    uart0_tx : out std_logic;
+    hps_uart_tx : out std_logic;
   );
 end entity;
 
@@ -40,7 +40,7 @@ architecture arch of pdm2serial is
 begin
 
   plll : pll port map(clock_50, key(0), clock_25, lock);
-  txx  : tx port map(clock_25, key(0), pardata, uart0_tx, key(1), ledr(8));
+  txx  : tx port map(clock_25, key(0), pardata, hps_uart_tx, key(1), ledr(8));
   ledr(7 downto 0) <= sw;
   pardata <= sw;
 
