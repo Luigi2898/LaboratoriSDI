@@ -73,6 +73,7 @@ architecture arch of PeakNoticer is
   signal cnt_out_D                   : unsigned(8 downto 0); --counter
 
   --TODO : Sistemare i tipi!!
+  --TODO : Controllare parallelismo!!
 
 begin
 
