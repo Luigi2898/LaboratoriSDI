@@ -42,6 +42,20 @@ architecture arch of PeakNoticer is
     );
   END component;
 
+  component square is
+    port (
+      in1 : in std_logic_vector(11 downto 0);
+      sq  : out std_logic_vector(23 downto 0)
+    );
+  end component;
+
+  component adder is
+    port (
+      in1, in2 : in std_logic_vector(24 downto 0);
+      res      : out std_logic_vector(25 downto 0)
+    );
+  end component;
+
 --Control signals
   signal en_cnt, rst_cnt             : std_logic; --counter
   signal rst_buffer_reg              : std_logic; --buffer_reg
@@ -53,6 +67,7 @@ architecture arch of PeakNoticer is
 --Data signals
   signal buffer_out                  : std_logic_vector(12 downto 0); --buffer_reg
   signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
+  signal square_out                  : std_logic_vector(24 downto 0); --sqaure
 
 --Dumb signals
   signal cont_out_D                  : std_logic_vector(9 downto 0); --counter
@@ -71,8 +86,13 @@ begin
                          port map(signa, buffer_out, clk, rst_buffer_reg);
   accumulator : registro generic map(24)
                          port map(next_energy, present_energy, clk, reset_accumulator);
-  --sommatore
 
-  --sottrattore
+  squa        : square port map(buffer_out, square_out);
 
+  add         : adder port map(square_out, present_energy, next_energy);
+
+--Debug
+  energy <= next_energy;
+  calc <= cnt_end;
+  
 end architecture;
