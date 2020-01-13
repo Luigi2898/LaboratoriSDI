@@ -1,6 +1,7 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
+  use ieee.std_logic_unsigned.all;
 
 entity square is
   port (
@@ -13,6 +14,6 @@ architecture arch of square is
 
 begin
 
-  sq <= to_intger(signed(in1)) * to_intger(signed(in1));
+  sq <= in1 * in1;
 
 end architecture;
