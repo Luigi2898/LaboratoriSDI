@@ -25,7 +25,8 @@ architecture arch of PeakNoticer is
      DataIn  : in std_logic_vector(Nbit-1 downto 0);
      DataOut : out std_logic_vector(Nbit-1 downto 0);
      clock   : in std_logic;
-     reset   : in std_logic
+     reset   : in std_logic;
+     enable  : in std_logic
     );
   end component;
 
@@ -87,6 +88,7 @@ architecture arch of PeakNoticer is
   signal cnt_out_D                   : unsigned(8 downto 0);          --counter
 
   --FIXME Sistemare i tipi!!
+  --FIXME Enable registri
   --TODO Controllare parallelismo!!
 
 begin
