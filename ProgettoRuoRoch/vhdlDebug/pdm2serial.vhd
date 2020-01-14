@@ -8,7 +8,7 @@ entity pdm2serial is
     key         : in std_logic_vector(1 downto 0);
     clock_50    : in std_logic;
     ledr        : out std_logic_vector(8 downto 0);
-    hps_uart_tx : out std_logic;
+    hps_uart_tx : out std_logic
   );
 end entity;
 
