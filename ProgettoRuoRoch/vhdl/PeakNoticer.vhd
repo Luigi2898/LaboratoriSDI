@@ -7,6 +7,7 @@ entity PeakNoticer is
     clk    : in std_logic;                      --clock
     rstN   : in std_logic;                      --reset active-low
     signa  : in std_logic_vector(11 downto 0);  --input signal
+    start  : in std_logic;                      --start
     peak   : out std_logic;                     --notifies that the treshold is overcome
     -- debug signals
     energy : out std_logic_vector(24 downto 0); --outputs computed energy
@@ -112,7 +113,11 @@ begin
               st <= RST_S;
             end if;
           when FOUND_TH =>
-            st <= RST_S;
+            if (start = '1') then
+              st <= RST_S;
+            else
+              st <= FOUND_TH;
+            end if;
           when others =>
             st <= RST_S;
         end case;
@@ -122,15 +127,19 @@ begin
 
   output_calculation : process(st)
   begin
-    en_cnt
-    rst_cnt
-    rst_buffer_reg
-    reset_accumulator
+    
+    en_cnt            <= '0';
+    rst_cnt           <= '1';
+    rst_buffer_reg    <= '1';
+    reset_accumulator <= '1';
     
     case (st) is
       when RST_S =>
-
-
+        rst_cnt         <= '0';
+        rst_buffer_reg  <= '0';
+        rst_accumulator <= '0';
+      when MEASURE =>
+        en_cnt <= '1';
       when others =>
 
     end case;
