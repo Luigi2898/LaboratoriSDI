@@ -56,24 +56,34 @@ architecture arch of PeakNoticer is
     );
   end component;
 
+  component comparator
+    port (
+      to_cmp, to_be_cmp : in  unsigned(24 downto 0);
+      maj               : out std_logic
+    );
+  end component comparator;
+
+
 --Control signals
-  signal en_cnt, rst_cnt             : std_logic; --counter
-  signal rst_buffer_reg              : std_logic; --buffer_reg
-  signal reset_accumulator           : std_logic; --accumulator
+  signal en_cnt, rst_cnt             : std_logic;                     --counter
+  signal rst_buffer_reg              : std_logic;                     --buffer_reg
+  signal reset_accumulator           : std_logic;                     --accumulator
 
 --State signals
-  signal cnt_end                     : std_logic; --counter
+  signal cnt_end                     : std_logic;                     --counter
+  signal cmp_out                     : std_logic;                     --comparator
 
 --Data signals
   signal buffer_out                  : std_logic_vector(11 downto 0); --buffer_reg
   signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
   signal square_out                  : std_logic_vector(23 downto 0); --square
+  signal reference_energy            : std_logic_vector(24 downto 0); --comparator
 
 --Dumb signals
-  signal cnt_out_D                   : unsigned(8 downto 0); --counter
+  signal cnt_out_D                   : unsigned(8 downto 0);          --counter
 
-  --TODO : Sistemare i tipi!!
-  --TODO : Controllare parallelismo!!
+  --FIXME Sistemare i tipi!!
+  --TODO Controllare parallelismo!!
 
 begin
 
@@ -90,7 +100,12 @@ begin
 
   squa        : square port map(buffer_out, square_out);
 
+
   add         : adder port map(square_out(23) & square_out, present_energy, next_energy);
+
+
+..cmp         : comparator port map (present_energy, reference_energy, cmp_out0);
+
 
 --Debug
   energy <= next_energy;
