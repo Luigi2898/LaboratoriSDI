@@ -152,7 +152,7 @@ begin
 
   treshold    <= others => '0';
 
-..cmp         : comparator port map (present_energy, treshold, cmp_out);
+  cmp         : comparator port map (present_energy, treshold, cmp_out);
 
 --Debug
   energy <= next_energy;
