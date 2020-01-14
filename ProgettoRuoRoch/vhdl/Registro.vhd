@@ -8,7 +8,8 @@ entity Registro is
    DataIn  : in std_logic_vector(Nbit-1 downto 0);
    DataOut : out std_logic_vector(Nbit-1 downto 0);
    clock   : in std_logic;
-   reset   : in std_logic
+   reset   : in std_logic;
+   enable  : in std_logic
   );
 end entity;
 
@@ -22,10 +23,9 @@ begin
   if (reset = '0') then
     DataOut <= (others => '0');
   elsif (clock' event and clock = '1') then
-    if (not(DataIn = zeta)) then
+    if (enable = '1') then
      DataOut <= DataIn;
     end if;
-
   end if;
 end process;
 
