@@ -4,13 +4,13 @@ library ieee;
 
 entity PeakNoticer is
   port (
-    clk    : in std_logic; --clock
-    rstN   : in std_logic; --reset active-low
-    signa  : in std_logic_vector(11 downto 0); --input signal
-    peak   : out std_logic; --notifies that the treshold is overcome
+    clk    : in std_logic;                      --clock
+    rstN   : in std_logic;                      --reset active-low
+    signa  : in std_logic_vector(11 downto 0);  --input signal
+    peak   : out std_logic;                     --notifies that the treshold is overcome
     -- debug signals
     energy : out std_logic_vector(24 downto 0); --outputs computed energy
-    calc   : out std_logic --notifies that an energy has been computed
+    calc   : out std_logic                      --notifies that an energy has been computed
   );
 end entity;
 
@@ -63,6 +63,9 @@ architecture arch of PeakNoticer is
     );
   end component comparator;
 
+--State
+  type state is(RST_S, MEASURE, FOUND_TH);
+  signal st                          : state;                         --state variable
 
 --Control signals
   signal en_cnt, rst_cnt             : std_logic;                     --counter
@@ -77,7 +80,7 @@ architecture arch of PeakNoticer is
   signal buffer_out                  : std_logic_vector(11 downto 0); --buffer_reg
   signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
   signal square_out                  : std_logic_vector(23 downto 0); --square
-  signal reference_energy            : std_logic_vector(24 downto 0); --comparator
+  signal treshold                    : std_logic_vector(24 downto 0); --comparator
 
 --Dumb signals
   signal cnt_out_D                   : unsigned(8 downto 0);          --counter
@@ -89,26 +92,71 @@ begin
 
 --Control unit
 
+  state_transition : process(clk)
+  begin
+    if (clk'event and clk = '1') then
+      if (rstN = '0') then
+        st <= RST_S;
+      else
+        case (st) is
+          when RST_S =>
+            st <= MEASURE;
+          when MEASURE =>
+            if (cnt_end = '1') then
+              st <= RST_S;
+            elsif (cnt_end = '0' and cmp_out = '0') then
+              st <= MEASURE;
+            elsif (cmp_out = '1') then
+              st <= FOUND_TH;
+            else
+              st <= RST_S;
+            end if;
+          when FOUND_TH =>
+            st <= RST_S;
+          when others =>
+            st <= RST_S;
+        end case;
+      end if;
+    end if;
+  end process;
+
+  output_calculation : process(st)
+  begin
+    en_cnt
+    rst_cnt
+    rst_buffer_reg
+    reset_accumulator
+    
+    case (st) is
+      when RST_S =>
+
+
+      when others =>
+
+    end case;
+  end process;
 --Datapath
 
   counter     : n_counter generic map(9, 500)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
+
   buffer_reg  : registro generic map(12)
                          port map(signa, buffer_out, clk, rst_buffer_reg);
+
   accumulator : registro generic map(25)
                          port map(next_energy, present_energy, clk, reset_accumulator);
 
   squa        : square port map(buffer_out, square_out);
 
-
   add         : adder port map(square_out(23) & square_out, present_energy, next_energy);
 
+  treshold    <= others => '0';
 
-..cmp         : comparator port map (present_energy, reference_energy, cmp_out0);
-
+..cmp         : comparator port map (present_energy, treshold, cmp_out);
 
 --Debug
   energy <= next_energy;
+
   calc <= cnt_end;
 
 end architecture;
