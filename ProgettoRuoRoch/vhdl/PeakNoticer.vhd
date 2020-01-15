@@ -60,7 +60,7 @@ architecture arch of PeakNoticer is
 
   component comparator
     port (
-      to_cmp, to_be_cmp : in  unsigned(24 downto 0);
+      to_cmp, to_be_cmp : in  signed(24 downto 0);
       maj               : out std_logic
     );
   end component comparator;
@@ -71,7 +71,7 @@ architecture arch of PeakNoticer is
 
 --Control signals
   signal en_cnt, rst_cnt             : std_logic;                     --counter
-  signal rst_buffer_reg              : std_logic;                     --buffer_reg
+  signal reset_buffer_reg            : std_logic;                     --buffer_reg
   signal en_buffer_reg               : std_logic;                     --buffer_reg
   signal reset_accumulator           : std_logic;                     --accumulator
   signal en_accumulator              : std_logic;                     --accumulator
@@ -134,16 +134,17 @@ begin
 
     en_cnt            <= '0';
     rst_cnt           <= '1';
-    rst_buffer_reg    <= '1';
+    reset_buffer_reg  <= '1';
     en_buffer_reg     <= '0';
     reset_accumulator <= '1';
     en_accumulator    <= '0';
+    peak              <= '0';
 
     case (st) is
       when RST_S =>
         rst_cnt         <= '0';
-        rst_buffer_reg  <= '0';
-        rst_accumulator <= '0';
+        reset_buffer_reg  <= '0';
+        reset_accumulator <= '0';
       when MEASURE =>
         en_cnt         <= '1';
         en_buffer_reg  <= '1';
@@ -152,8 +153,8 @@ begin
         peak <= '1';
       when others =>
         rst_cnt         <= '0';
-        rst_buffer_reg  <= '0';
-        rst_accumulator <= '0';
+        reset_buffer_reg  <= '0';
+        reset_accumulator <= '0';
     end case;
   end process;
 
@@ -163,7 +164,7 @@ begin
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
   buffer_reg  : registro generic map(12)
-                         port map(signa, buffer_out, clk, rst_buffer_reg, en_buffer_reg);
+                         port map(signa, buffer_out, clk, reset_buffer_reg, en_buffer_reg);
 
   accumulator : registro generic map(25)
                          port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
@@ -172,9 +173,9 @@ begin
 
   add         : adder port map(square_out(23) & square_out, present_energy, next_energy);
 
-  treshold    <= others => '0';
+  treshold    <= (others => '0');
 
-  cmp         : comparator port map (present_energy, treshold, cmp_out);
+  cmp         : comparator port map (signed(present_energy), signed(treshold), cmp_out);
 
 --Debug
   energy <= next_energy;
