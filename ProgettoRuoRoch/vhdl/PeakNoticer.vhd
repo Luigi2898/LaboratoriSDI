@@ -7,6 +7,7 @@ entity PeakNoticer is
     clk    : in std_logic;                      --clock
     rstN   : in std_logic;                      --reset active-low
     signa  : in std_logic_vector(11 downto 0);  --input signal
+    start  : in std_logic;                      --start
     peak   : out std_logic;                     --notifies that the treshold is overcome
     -- debug signals
     energy : out std_logic_vector(24 downto 0); --outputs computed energy
@@ -24,7 +25,8 @@ architecture arch of PeakNoticer is
      DataIn  : in std_logic_vector(Nbit-1 downto 0);
      DataOut : out std_logic_vector(Nbit-1 downto 0);
      clock   : in std_logic;
-     reset   : in std_logic
+     reset   : in std_logic;
+     enable  : in std_logic
     );
   end component;
 
@@ -86,6 +88,7 @@ architecture arch of PeakNoticer is
   signal cnt_out_D                   : unsigned(8 downto 0);          --counter
 
   --FIXME Sistemare i tipi!!
+  --FIXME Enable registri
   --TODO Controllare parallelismo!!
 
 begin
@@ -112,7 +115,11 @@ begin
               st <= RST_S;
             end if;
           when FOUND_TH =>
-            st <= RST_S;
+            if (start = '1') then
+              st <= RST_S;
+            else
+              st <= FOUND_TH;
+            end if;
           when others =>
             st <= RST_S;
         end case;
@@ -122,15 +129,27 @@ begin
 
   output_calculation : process(st)
   begin
+<<<<<<< HEAD
     en_cnt
     rst_cnt
     rst_buffer_reg
     reset_accumulator
 
+=======
+    
+    en_cnt            <= '0';
+    rst_cnt           <= '1';
+    rst_buffer_reg    <= '1';
+    reset_accumulator <= '1';
+    
+>>>>>>> 6c1bc855d065832bfa1494bdf186d7dac5708d58
     case (st) is
       when RST_S =>
-
-
+        rst_cnt         <= '0';
+        rst_buffer_reg  <= '0';
+        rst_accumulator <= '0';
+      when MEASURE =>
+        en_cnt <= '1';
       when others =>
 
     end case;
@@ -152,7 +171,7 @@ begin
 
   treshold    <= others => '0';
 
-..cmp         : comparator port map (present_energy, treshold, cmp_out);
+  cmp         : comparator port map (present_energy, treshold, cmp_out);
 
 --Debug
   energy <= next_energy;
