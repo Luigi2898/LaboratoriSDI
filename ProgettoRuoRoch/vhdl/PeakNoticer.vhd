@@ -6,11 +6,11 @@ entity PeakNoticer is
   port (
     clk    : in std_logic;                      --clock
     rstN   : in std_logic;                      --reset active-low
-    signa  : in std_logic_vector(11 downto 0);  --input signal
+    signa  : in std_logic_vector(15 downto 0);  --input signal
     start  : in std_logic;                      --start
     peak   : out std_logic;                     --notifies that the treshold is overcome
     -- debug signals
-    energy : out std_logic_vector(24 downto 0); --outputs computed energy
+    energy : out std_logic_vector(31 downto 0); --outputs computed energy
     calc   : out std_logic                      --notifies that an energy has been computed
   );
 end entity;
@@ -46,21 +46,21 @@ architecture arch of PeakNoticer is
 
   component square is
     port (
-      in1 : in std_logic_vector(11 downto 0);
-      sq  : out std_logic_vector(23 downto 0)
+      in1 : in std_logic_vector(15 downto 0);
+      sq  : out std_logic_vector(31 downto 0)
     );
   end component;
 
   component adder is
     port (
-      in1, in2 : in std_logic_vector(24 downto 0);
-      res      : out std_logic_vector(24 downto 0)
+      in1, in2 : in std_logic_vector(31 downto 0);
+      res      : out std_logic_vector(31 downto 0)
     );
   end component;
 
   component comparator
     port (
-      to_cmp, to_be_cmp : in  signed(24 downto 0);
+      to_cmp, to_be_cmp : in  signed(31 downto 0);
       maj               : out std_logic
     );
   end component comparator;
@@ -81,13 +81,13 @@ architecture arch of PeakNoticer is
   signal cmp_out                     : std_logic;                     --comparator
 
 --Data signals
-  signal buffer_out                  : std_logic_vector(11 downto 0); --buffer_reg
-  signal next_energy, present_energy : std_logic_vector(24 downto 0); --accumulator
-  signal square_out                  : std_logic_vector(23 downto 0); --square
-  signal treshold                    : std_logic_vector(24 downto 0); --comparator
+  signal buffer_out                  : std_logic_vector(15 downto 0); --buffer_reg
+  signal next_energy, present_energy : std_logic_vector(31 downto 0); --accumulator
+  signal square_out                  : std_logic_vector(31 downto 0); --square
+  signal treshold                    : std_logic_vector(31 downto 0); --comparator
 
 --Dumb signals
-  signal cnt_out_D                   : unsigned(8 downto 0);          --counter
+  signal cnt_out_D                   : unsigned(17 downto 0);          --counter
 
   --FIXME Sistemare i tipi!!
 
@@ -105,7 +105,11 @@ begin
       else
         case (st) is
           when RST_S =>
-            st <= MEASURE;
+            if (start = '1') then
+              st <= MEASURE;
+            else
+              st <= RST_S;
+            end if;
           when MEASURE =>
             if (cnt_end = '1') then
               st <= RST_S;
@@ -160,20 +164,21 @@ begin
 
 --Datapath
 
-  counter     : n_counter generic map(9, 500)
+  counter     : n_counter generic map(18, 177307)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
-  buffer_reg  : registro generic map(12)
+  buffer_reg  : registro generic map(16)
                          port map(signa, buffer_out, clk, reset_buffer_reg, en_buffer_reg);
 
-  accumulator : registro generic map(25)
+  accumulator : registro generic map(32)
                          port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
 
   squa        : square port map(buffer_out, square_out);
 
-  add         : adder port map(square_out(23) & square_out, present_energy, next_energy);
+  add         : adder port map(square_out, present_energy, next_energy);
 
-  treshold    <= (others => '0');
+  treshold(31)             <= '0';
+  treshold(30 downto 0)    <= (others => '1');
 
   cmp         : comparator port map (signed(present_energy), signed(treshold), cmp_out);
 
