@@ -177,8 +177,7 @@ begin
 
   add         : adder port map(square_out, present_energy, next_energy);
 
-  treshold(31)             <= '0';
-  treshold(30 downto 0)    <= (others => '1');
+  treshold <= "00010110111010101110110100010110";
 
   cmp         : comparator port map (signed(present_energy), signed(treshold), cmp_out);
 
