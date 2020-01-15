@@ -63,14 +63,14 @@ begin
 
     file inFile : text is in "input.txt";
     variable l : line;
-    variable n : integer;
+    variable n : std_logic_vector(15 downto 0);
 
   begin
     wait for 27 ns;
     while (endfile(inFile) = false) loop
       readline(inFile, l);
       read(l,n);
-      data_i <= std_logic_vector(to_unsigned(n, 16));
+      data_i <= n;
       wait for 10 ns;
     end loop;
     wait;
