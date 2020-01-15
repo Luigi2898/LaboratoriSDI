@@ -88,7 +88,9 @@ architecture arch of PeakNoticer is
   signal cnt_out_D                   : unsigned(8 downto 0);          --counter
 
   --FIXME Sistemare i tipi!!
+
   --FIXME Enable registri
+
   --TODO Controllare parallelismo!!
 
 begin
@@ -129,20 +131,12 @@ begin
 
   output_calculation : process(st)
   begin
-<<<<<<< HEAD
-    en_cnt
-    rst_cnt
-    rst_buffer_reg
-    reset_accumulator
 
-=======
-    
     en_cnt            <= '0';
     rst_cnt           <= '1';
     rst_buffer_reg    <= '1';
     reset_accumulator <= '1';
-    
->>>>>>> 6c1bc855d065832bfa1494bdf186d7dac5708d58
+
     case (st) is
       when RST_S =>
         rst_cnt         <= '0';
