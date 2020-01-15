@@ -126,7 +126,7 @@ begin
     rst_cnt
     rst_buffer_reg
     reset_accumulator
-    
+
     case (st) is
       when RST_S =>
 
