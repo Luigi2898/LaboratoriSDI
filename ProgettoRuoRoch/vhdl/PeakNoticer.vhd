@@ -72,7 +72,9 @@ architecture arch of PeakNoticer is
 --Control signals
   signal en_cnt, rst_cnt             : std_logic;                     --counter
   signal rst_buffer_reg              : std_logic;                     --buffer_reg
+  signal en_buffer_reg               : std_logic;                     --buffer_reg
   signal reset_accumulator           : std_logic;                     --accumulator
+  signal en_accumulator              : std_logic;                     --accumulator
 
 --State signals
   signal cnt_end                     : std_logic;                     --counter
@@ -88,8 +90,6 @@ architecture arch of PeakNoticer is
   signal cnt_out_D                   : unsigned(8 downto 0);          --counter
 
   --FIXME Sistemare i tipi!!
-
-  --FIXME Enable registri
 
   --TODO Controllare parallelismo!!
 
@@ -135,7 +135,9 @@ begin
     en_cnt            <= '0';
     rst_cnt           <= '1';
     rst_buffer_reg    <= '1';
+    en_buffer_reg     <= '0';
     reset_accumulator <= '1';
+    en_accumulator    <= '0';
 
     case (st) is
       when RST_S =>
@@ -143,21 +145,28 @@ begin
         rst_buffer_reg  <= '0';
         rst_accumulator <= '0';
       when MEASURE =>
-        en_cnt <= '1';
+        en_cnt         <= '1';
+        en_buffer_reg  <= '1';
+        en_accumulator <= '1';
+      when FOUND_TH =>
+        peak <= '1';
       when others =>
-
+        rst_cnt         <= '0';
+        rst_buffer_reg  <= '0';
+        rst_accumulator <= '0';
     end case;
   end process;
+
 --Datapath
 
   counter     : n_counter generic map(9, 500)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
   buffer_reg  : registro generic map(12)
-                         port map(signa, buffer_out, clk, rst_buffer_reg);
+                         port map(signa, buffer_out, clk, rst_buffer_reg, en_buffer_reg);
 
   accumulator : registro generic map(25)
-                         port map(next_energy, present_energy, clk, reset_accumulator);
+                         port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
 
   squa        : square port map(buffer_out, square_out);
 
