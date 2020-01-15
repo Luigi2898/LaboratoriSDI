@@ -5,8 +5,8 @@ library ieee;
 
 entity adder is
   port (
-    in1, in2 : in std_logic_vector(24 downto 0);
-    res      : out std_logic_vector(24 downto 0)
+    in1, in2 : in std_logic_vector(31 downto 0);
+    res      : out std_logic_vector(31 downto 0)
   );
 end entity;
 
