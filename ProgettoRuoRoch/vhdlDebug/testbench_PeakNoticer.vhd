@@ -13,20 +13,20 @@ architecture arch of testbench_PeakNoticer is
   port (
     clk    : in  std_logic;
     rstN   : in  std_logic;
-    signa  : in  std_logic_vector(15 downto 0);
+    signa  : in  signed(15 downto 0);
     start  : in  std_logic;
     peak   : out std_logic;
-    energy : out std_logic_vector(31 downto 0);
+    energy : out signed(31 downto 0);
     calc   : out std_logic
   );
   end component PeakNoticer;
 
   signal clk    : std_logic;
   signal rstN   : std_logic;
-  signal data_i : std_logic_vector(15 downto 0);
+  signal data_i : signed(15 downto 0);
   signal start  : std_logic;
   signal peak   : std_logic;
-  signal energy : std_logic_vector(31 downto 0);
+  signal energy : signed(31 downto 0);
   signal calc   : std_logic;
 
 begin
@@ -63,14 +63,14 @@ begin
 
     file inFile : text is in "input.txt";
     variable l : line;
-    variable n : std_logic_vector(15 downto 0);
+    variable n : integer;
 
   begin
-    wait for 27 ns;
+    wait for 40 ns;
     while (endfile(inFile) = false) loop
       readline(inFile, l);
       read(l,n);
-      data_i <= n;
+      data_i <= to_signed(n, 16);
       wait for 10 ns;
     end loop;
     wait;
