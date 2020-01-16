@@ -5,8 +5,8 @@ library ieee;
 
 entity square is
   port (
-    in1 : in std_logic_vector(15 downto 0);
-    sq  : out std_logic_vector(31 downto 0)
+    in1 : in signed(15 downto 0);
+    sq  : out signed(31 downto 0)
   );
 end entity;
 
