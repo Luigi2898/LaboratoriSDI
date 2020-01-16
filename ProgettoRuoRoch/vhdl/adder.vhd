@@ -5,8 +5,8 @@ library ieee;
 
 entity adder is
   port (
-    in1, in2 : in signed(31 downto 0);
-    res      : out signed(31 downto 0)
+    in1, in2 : in signed(37 downto 0);
+    res      : out signed(37 downto 0)
   );
 end entity;
 
