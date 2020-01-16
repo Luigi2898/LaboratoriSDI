@@ -6,11 +6,11 @@ entity PeakNoticer is
   port (
     clk    : in std_logic;                      --clock
     rstN   : in std_logic;                      --reset active-low
-    signa  : in signed(15 downto 0);  --input signal
+    signa  : in signed(13 downto 0);  --input signal
     start  : in std_logic;                      --start
     peak   : out std_logic;                     --notifies that the treshold is overcome
     -- debug signals
-    energy : out signed(31 downto 0); --outputs computed energy
+    energy : out signed(37 downto 0); --outputs computed energy
     calc   : out std_logic                      --notifies that an energy has been computed
   );
 end entity;
@@ -46,21 +46,21 @@ architecture arch of PeakNoticer is
 
   component square is
     port (
-      in1 : in signed(15 downto 0);
-      sq  : out signed(31 downto 0)
+      in1 : in signed(13 downto 0);
+      sq  : out signed(27 downto 0)
     );
   end component;
 
   component adder is
     port (
-      in1, in2 : in signed(31 downto 0);
-      res      : out signed(31 downto 0)
+      in1, in2 : in signed(37 downto 0);
+      res      : out signed(37 downto 0)
     );
   end component;
 
   component comparator
     port (
-      to_cmp, to_be_cmp : in  signed(31 downto 0);
+      to_cmp, to_be_cmp : in  signed(37 downto 0);
       maj               : out std_logic
     );
   end component comparator;
@@ -81,17 +81,14 @@ architecture arch of PeakNoticer is
   signal cmp_out                     : std_logic;                     --comparator
 
 --Data signals
-  signal buffer_out                  : signed(15 downto 0);           --buffer_reg
-  signal next_energy, present_energy : signed(31 downto 0);           --accumulator
-  signal square_out                  : signed(31 downto 0);           --square
-  signal treshold                    : signed(31 downto 0);           --comparator
+  signal buffer_out                  : signed(13 downto 0);           --buffer_reg
+  signal next_energy, present_energy : signed(37 downto 0);           --accumulator
+  signal square_out                  : signed(27 downto 0);           --square
+  signal square_out_ext              : signed(37 downto 0);
+  signal treshold                    : signed(37 downto 0);           --comparator
 
 --Dumb signals
   signal cnt_out_D                   : unsigned(9 downto 0);          --counter
-
-  --FIXME Sistemare i tipi!!
-
-  --TODO Controllare parallelismo!!
 
 begin
 
@@ -167,18 +164,21 @@ begin
   counter     : n_counter generic map(10, 1000)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
-  buffer_reg  : registro generic map(16)
+  buffer_reg  : registro generic map(14)
                          port map(signa, buffer_out, clk, reset_buffer_reg, en_buffer_reg);
 
-  accumulator : registro generic map(32)
+  accumulator : registro generic map(38)
                          port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
 
   squa        : square port map(buffer_out, square_out);
 
-  add         : adder port map(square_out, present_energy, next_energy);
+  square_out_ext(27 downto 0) <= square_out;
+  square_out_ext(37 downto 28) <= (others => square_out(27));
 
-  treshold(31) <= '0';
-  treshold(30 downto 0) <= (others => '1');
+  add         : adder port map(square_out_ext, present_energy, next_energy);
+
+  treshold(37) <= '0';
+  treshold(36 downto 0) <= (others => '1');
 
   cmp         : comparator port map (present_energy, treshold, cmp_out);
 
