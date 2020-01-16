@@ -1,12 +1,12 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
-  use ieee.std_logic_unsigned.all;
+  use ieee.std_logic_signed.all;
 
 entity adder is
   port (
-    in1, in2 : in std_logic_vector(31 downto 0);
-    res      : out std_logic_vector(31 downto 0)
+    in1, in2 : in signed(31 downto 0);
+    res      : out signed(31 downto 0)
   );
 end entity;
 
