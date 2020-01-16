@@ -4,7 +4,7 @@ library ieee;
 
 entity comparator is
   port (
-    to_cmp, to_be_cmp : in signed(31 downto 0);
+    to_cmp, to_be_cmp : in signed(37 downto 0);
     maj               : out std_logic
   );
 end entity;
