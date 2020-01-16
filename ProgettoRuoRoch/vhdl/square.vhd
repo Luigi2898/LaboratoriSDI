@@ -5,8 +5,8 @@ library ieee;
 
 entity square is
   port (
-    in1 : in signed(15 downto 0);
-    sq  : out signed(31 downto 0)
+    in1 : in signed(13 downto 0);
+    sq  : out signed(27 downto 0)
   );
 end entity;
 
