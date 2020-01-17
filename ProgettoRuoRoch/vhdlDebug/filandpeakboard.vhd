@@ -52,6 +52,8 @@ architecture arch of filandpeakboard is
   signal ed   : signed(37 downto 0);
   signal cnt_out : unsigned(10 downto 0);
   signal cnt_end : std_logic;
+  signal s : std_logic := '1';
+  signal r : std_logic := '0';
 
 begin
 
@@ -61,5 +63,21 @@ begin
 
   nc  : generic map(11, 1042)
         port map(clock_50, sw(2), sw(3), cnt_end, cnt_out);
+
+  srff : process(cnt_end)
+  begin
+    if(cnt_end'event and cnt_end = '1') then
+      if(s = '1' and r = '0') then
+        q <= '1';
+      elsif (s = '0' and r = '1') then
+        q <= '0';
+      end if;
+    end if;
+  end process;
+
+  s <= not(q);
+  r <= q;
+  gpio_0(14) <= q;
+  clk_48k <= q;
 
 end architecture;
