@@ -47,10 +47,9 @@ architecture arch of FilterSerial is
   signal data         : signed(13 downto 0);
   signal clock_25, lk : std_logic;
   signal send         : std_logic_vector(7 downto 0);
+  signal ctr, dav     : std_logic;
 
 begin
-
-  --TODO CAPIRE CLOCK FILTRO
 
   FILTER_BLOCK_i : FILTER_BLOCK port map (clock_50, sw(0), gpio_0(0), data);
 
@@ -59,5 +58,9 @@ begin
   send <= data(7 downto 0) when ctr = '1' else "00" & data(13 downto 8);
 
   txx : tx port map(clock_25, sw(0), send, hps_uart_tx, dav, ledr(0));
+
+  dav <= '1';
+
+  ctr <= '1' when
 
 end architecture;
