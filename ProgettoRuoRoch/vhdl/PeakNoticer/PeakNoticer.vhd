@@ -16,7 +16,7 @@ entity PeakNoticer is
 end entity;
 
 architecture arch of PeakNoticer is
-
+  
   component Registro is
     generic(
       Nbit : integer := 8
