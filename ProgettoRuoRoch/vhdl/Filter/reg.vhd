@@ -1,25 +1,27 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-entity reg is
-	port(reg_in : in std_logic;
-		 reg_out : out std_logic;
-		 clk, rst : in std_logic	
+ENTITY REG IS
+	PORT(REG_IN : IN STD_LOGIC;
+		 REG_OUT : OUT STD_LOGIC;
+		 CLK, RST, LOAD : IN STD_LOGIC	
 	);
-end entity;
+END ENTITY;
 
-architecture beh of reg is
+ARCHITECTURE BEH OF REG IS
 
-begin
-REGproc: process(clk)
-begin
-if(rst = '0') then
-	reg_out <= '0';
-     elsif(clk'event and clk = '1') then
-		 reg_out <= reg_in;
-end if;
+BEGIN
+REGPROC: PROCESS(CLK)
+BEGIN
+IF(RST = '0') THEN
+	REG_OUT <= '0';
+     ELSIF(CLK'EVENT AND CLK = '1') THEN
+		 IF(LOAD = '1') THEN
+		 REG_OUT <= REG_IN;
+		 END IF;
+END IF;
 
-end process;
+END PROCESS;
 
-end architecture;
+END ARCHITECTURE;
