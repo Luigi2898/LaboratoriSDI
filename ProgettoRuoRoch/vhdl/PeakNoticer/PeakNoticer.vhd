@@ -4,19 +4,19 @@ library ieee;
 
 entity PeakNoticer is
   port (
-    clk    : in std_logic;                      --clock
-    rstN   : in std_logic;                      --reset active-low
+    clk    : in std_logic;            --clock
+    rstN   : in std_logic;            --reset active-low
     signa  : in signed(13 downto 0);  --input signal
-    start  : in std_logic;                      --start
-    peak   : out std_logic;                     --notifies that the treshold is overcome
+    start  : in std_logic;            --start
+    peak   : out std_logic;           --notifies that the treshold is overcome
     -- debug signals
     energy : out signed(37 downto 0); --outputs computed energy
-    calc   : out std_logic                      --notifies that an energy has been computed
+    calc   : out std_logic            --notifies that an energy has been computed
   );
 end entity;
 
 architecture arch of PeakNoticer is
-  
+
   component Registro is
     generic(
       Nbit : integer := 8
