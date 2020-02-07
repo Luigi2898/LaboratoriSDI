@@ -30,11 +30,7 @@ BEGIN
 		D_OUT <= '0';
     ELSIF (CLOCK'EVENT AND CLOCK = '1') THEN      
         IF (LOAD_EN = '1') THEN
-          D_OUT <= REG(N-1);
-          FOR I IN N-1 DOWNTO 1 LOOP
-            REG(I) <= REG(I-1);
-          END LOOP;
-		  REG(0) <= D_IN;
+		 REG(0) <= D_IN;
 		 ELSIF(SHIFT_EN = '1') THEN
 		     D_OUT <= REG(N-1);
 			 FOR I IN N-2 DOWNTO 0 LOOP

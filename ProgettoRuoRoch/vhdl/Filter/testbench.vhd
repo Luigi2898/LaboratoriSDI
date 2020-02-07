@@ -8,12 +8,11 @@ end entity;
 
 ARCHITECTURE BEH OF TESTBENCH IS
 
-
 COMPONENT DECIMATOR_FIR IS
 	PORT(CLK        : IN STD_LOGIC;
 		 RST        : IN STD_LOGIC;
 		 START      : IN STD_LOGIC;
-		 PDM_IN     : IN STD_LOGIC;
+		 PDM_IN     : IN STD_LOGIC; 
 		 FILTER_OUT : OUT SIGNED(23 DOWNTO 0);
 		 FILT_VALID : OUT STD_LOGIC	
 	);
@@ -29,7 +28,7 @@ BEGIN
 RST_PROCESS : PROCESS
 BEGIN
 	RST <= '0';
-	WAIT FOR 5 NS;
+	WAIT FOR 10 NS;
 	RST <= '1';
 	wait for 20 sec;
 END PROCESS;
@@ -51,7 +50,7 @@ in_p : process
 		variable n : integer;
 			
 	begin
-		wait for 5 ns;
+		wait for 20 ns;
 		while (endfile(inFile) = false) loop
 			readline(inFile, l);
 			read(l,n);
