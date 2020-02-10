@@ -90,7 +90,7 @@ architecture arch of PeakNoticer is
   signal buffer_out                  : signed(13 downto 0);           --buffer_reg
   signal next_energy, present_energy : signed(37 downto 0);           --accumulator
   signal square_out                  : signed(27 downto 0);           --square
-  signal square_out_ext              : signed(37 downto 0);
+  signal square_out_ext              : signed(37 downto 0);           --square out extended
   signal treshold                    : signed(37 downto 0);           --comparator
 
 --Dumb signals
