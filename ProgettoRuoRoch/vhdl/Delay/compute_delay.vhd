@@ -10,7 +10,7 @@ entity compute_delay is
         PEAK1 : IN STD_LOGIC;
         PEAK2 : IN STD_LOGIC;
         RESTART : OUT STD_LOGIC;
-        SIMULTANEOUS : OUT STD_LOGIC;
+        SIMULTANEOUS : buffer STD_LOGIC;
         DONE : OUT STD_LOGIC
   );
 end entity;
@@ -49,7 +49,7 @@ architecture arch of compute_delay is
      DELAY_END     : IN  STD_LOGIC;
      EN_DELAY_OUT  : OUT STD_LOGIC;
      SUB           : OUT STD_LOGIC;
-     SIMULTANEOUS  : OUT STD_LOGIC;
+     SIMULTANEOUS  : buffer STD_LOGIC;
      DONE          : OUT STD_LOGIC
   );
   END COMPONENT;

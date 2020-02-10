@@ -11,14 +11,14 @@ ENTITY CU_DELAY IS
 		 RESTART       : OUT STD_LOGIC; --FA RIPARTIRE I COMPARATORI
 		 EN_CNT_DELAY  : OUT STD_LOGIC;
 		 RST_CNT_DELAY : OUT STD_LOGIC;
-     RST_FIRST     : OUT STD_LOGIC;
-     RST_SECOND    : OUT STD_LOGIC;
+         RST_FIRST     : OUT STD_LOGIC;
+         RST_SECOND    : OUT STD_LOGIC;
 		 EN_FIRST      : OUT STD_LOGIC;
-	   EN_SECOND     : OUT STD_LOGIC;
-	   DELAY_END     : IN  STD_LOGIC;
+	     EN_SECOND     : OUT STD_LOGIC;
+	     DELAY_END     : IN  STD_LOGIC;
 		 EN_DELAY_OUT  : OUT STD_LOGIC;
 		 SUB           : OUT STD_LOGIC;
-     SIMULTANEOUS  : OUT STD_LOGIC;
+         SIMULTANEOUS  : buffer STD_LOGIC;
 		 DONE          : OUT STD_LOGIC
 	);
 END ENTITY;
@@ -95,12 +95,15 @@ CASE (STATE) IS
     WHEN SECOND_RX =>
     EN_FIRST <= '1';
     WHEN CALC_DELAY =>
-	  EN_DELAY_OUT <= '1';
+	 EN_DELAY_OUT <= '1';
     RESTART      <= '1';
     WHEN EQUAL =>
     SIMULTANEOUS <= '1';
-    WHEN TRANSMIT =>
-	  DONE <= '1';
+    WHEN TRANSMIT => if(simultaneous = '1') then
+	                 DONE <= '1';
+					 simultaneous <= '1';
+					 else done <= '1';
+					 end if;
 END CASE;
 END PROCESS;
 

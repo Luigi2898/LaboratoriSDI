@@ -8,16 +8,16 @@ end entity;
 architecture beh of testbench_delay is
 
   COMPONENT compute_delay is
-    port (clk : in std_logic;
-          rst   : in std_logic;
-          DELAY_OUT : BUFFER SIGNED(9 DOWNTO 0);
-          MSB   : OUT STD_LOGIC;
-          PEAK1 : IN STD_LOGIC;
-          PEAK2 : IN STD_LOGIC;
-          RESTART : OUT STD_LOGIC;
-          SIMULTANEOUS : OUT STD_LOGIC;
-          DONE : OUT STD_LOGIC
-    );
+      port (clk : in std_logic;
+        rst   : in std_logic;
+        DELAY_OUT : BUFFER SIGNED(9 DOWNTO 0);
+        MSB   : OUT STD_LOGIC;
+        PEAK1 : IN STD_LOGIC;
+        PEAK2 : IN STD_LOGIC;
+        RESTART : OUT STD_LOGIC;
+        SIMULTANEOUS : buffer STD_LOGIC;
+        DONE : OUT STD_LOGIC
+  );
   end COMPONENT;
 
 SIGNAL DELAY_OUT : SIGNED(9 DOWNTO 0);
@@ -43,21 +43,21 @@ begin
 
   	end process;
 
-    PEAK1_P : process
-    begin
-    WAIT FOR 10 us;
-    PEAK1 <= '1';
-    wait for 1 us;
-    PEAK1 <= '0';
-    wait;
-    END PROCESS;
-
     PEAK2_P : process
     begin
-    WAIT FOR 20 us;
+    WAIT FOR 10 us;
     PEAK2 <= '1';
     wait for 1 us;
     PEAK2 <= '0';
+    wait;
+    END PROCESS;
+
+    PEAK1_P : process
+    begin
+    WAIT FOR 20 us;
+    PEAK1 <= '1';
+    wait for 1 us;
+    PEAK1 <= '0';
     wait;
     END PROCESS;
 
