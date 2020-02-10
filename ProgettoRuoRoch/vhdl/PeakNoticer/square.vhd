@@ -4,9 +4,10 @@ library ieee;
   use ieee.std_logic_signed.all;
 
 entity square is
+  generic (N : integer := 8);
   port (
-    in1 : in signed(13 downto 0);
-    sq  : out signed(27 downto 0)
+    in1 : in  signed(N - 1 downto 0);
+    sq  : out signed(2 * N - 1 downto 0)
   );
 end entity;
 
