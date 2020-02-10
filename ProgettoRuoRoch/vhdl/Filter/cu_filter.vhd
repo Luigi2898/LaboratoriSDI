@@ -8,7 +8,7 @@ ENTITY CU_FILTER IS
 		 START                : IN STD_LOGIC;
 		 RST_ALL              : OUT STD_LOGIC;
 		 RST_M_DIV            : OUT STD_LOGIC;
-		 DAV_OUT              : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 DAV_OUT              : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
 		 DAV_IN               : OUT STD_LOGIC;
 		 EN_CNT_ADD           : OUT STD_LOGIC;
 		 LOAD                 : OUT STD_LOGIC;
@@ -26,11 +26,12 @@ END ENTITY;
 
 ARCHITECTURE BEH OF CU_FILTER IS
 
-TYPE STATE_TYPE IS (RST_S, IDLE, DECIMATE, PUSH, START_POLY, WAITS, ACCUMULATE, COUNT, DONE);
+TYPE STATE_TYPE IS (RST_S, IDLE, DECIMATE, PUSH, START_POLY, ACCUMULATE, DONE);
 SIGNAL STATE : STATE_TYPE; 
+SIGNAL DAV_OUT1 : STD_LOGIC;
 
 BEGIN
-
+DAV_OUT1 <= DAV_OUT(0) AND DAV_OUT(1) AND DAV_OUT(2) AND DAV_OUT(3) AND DAV_OUT(4) AND DAV_OUT(5) AND DAV_OUT(6) AND DAV_OUT(7);
 FSM_PROCESS : PROCESS(CLK, RST)
 BEGIN
 IF(RST = '0') THEN
@@ -47,23 +48,15 @@ IF(RST = '0') THEN
 					         END IF;
 		  WHEN DECIMATE   => STATE <= IDLE;	
 		  WHEN PUSH       => STATE <= START_POLY;
-		  WHEN START_POLY => IF((DAV_OUT(0) AND DAV_OUT(1) AND DAV_OUT(2) AND DAV_OUT(3) AND DAV_OUT(4)) = '1') THEN 
+		  WHEN START_POLY => IF(DAV_OUT1 = '1') THEN 
 								 STATE <= ACCUMULATE;
-							 ELSE STATE <= WAITS;
+							 ELSE STATE <= START_POLY;
 							 END IF;
-		  WHEN WAITS      => IF((DAV_OUT(0) AND DAV_OUT(1) AND DAV_OUT(2) AND DAV_OUT(3) AND DAV_OUT(4)) = '1') THEN 
-								 STATE <= ACCUMULATE;
-							 ELSE STATE <= WAITS;
-							 END IF;
-		  WHEN ACCUMULATE => STATE <= COUNT;
-          WHEN COUNT      => IF(CNT_END = '1') THEN
+		  WHEN ACCUMULATE => IF(CNT_END = '1') THEN
 							 STATE <= DONE;
 							 ELSE STATE <= ACCUMULATE;
 							 END IF;
-		  WHEN DONE       => IF(M_DIV_END_OUT = '1') THEN
-							 STATE <= START_POLY;
-							 ELSE STATE <= IDLE;
-							 END IF;					         
+		  WHEN DONE       => STATE <= IDLE;					         
 		  WHEN OTHERS     => STATE <= RST_S;					 
      	  END CASE; 
 END IF;			
@@ -91,21 +84,18 @@ POLY_VALID <= '0';
          WHEN IDLE => 
 		
 		 WHEN DECIMATE =>
-		 M_EN <= '1';
-		 WHEN PUSH =>		  
 		 LOAD <= '1';
-		 RST_ACC <= '0';
-         WHEN START_POLY =>
+		 M_EN <= '1';
+		 WHEN PUSH =>
 		 RST_M_DIV <= '0';
-         M_DIV_END_IN <= '1'; 		 
-         WHEN WAITS =>   
+		 M_DIV_END_IN <= '1'; 
+		 RST_ACC <= '0';
+         WHEN START_POLY =>       		 
+  
 		 WHEN ACCUMULATE =>
 		 DAV_IN <= '1';
          EN_ACC <= '1';		
-         EN_CNT_ADD <= '1';		 		 
-		 
-		 WHEN COUNT =>
-		 DAV_IN <= '1';
+         EN_CNT_ADD <= '1';		 
 		 WHEN DONE =>
 		 FILT_VALID <= '1';
 		 POLY_VALID <= '1';

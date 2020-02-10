@@ -22,6 +22,7 @@ signal pdm_in : STD_LOGIC;
 signal clk, rst: STD_LOGIC;
 signal filtered : signed(27 downto 0);
 SIGNAL START, FILT_VALID : STD_LOGIC;
+signal clk_pdm : std_logic;
 
 BEGIN
 
@@ -36,17 +37,104 @@ END PROCESS;
 clock : process
 begin
      clk <= '1';
-	 wait for 500 ns;
+	 wait for 5 ns;
 	 clk <= '0';
-	 wait for 500 ns;
+	 wait for 5 ns;
 	
 end process;
 	
-start_p: process
-begin	
-	 wait for 100 ns;
-	 start <= '1';
-	 wait for 20 sec;
+start_p : process
+begin
+   start <= '0';
+   wait for 490 ns;
+   start <= '1';
+   wait for 10 ns;
+   start <= '0';
+   wait for 490 ns;	
+end process;
+
+
+pdm : process
+begin
+WAIT FOR 100 NS;
+pdm_in <= '1';
+WAIT FOR 500 NS;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '0';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+pdm_in <= '1';
+wait for 500 ns;
+
+
 end process;
 	
 filt1 : DECIMATOR_FIR port map(clk, rst, START, pdm_in, filtered, FILT_VALID);
