@@ -4,11 +4,12 @@ library ieee;
 
 entity PeakNoticer is
   port (
-    clk    : in std_logic;            --clock
-    rstN   : in std_logic;            --reset active-low
-    signa  : in signed(27 downto 0);  --input signal
-    start  : in std_logic;            --start
-    peak   : out std_logic;           --notifies that the treshold is overcome
+    clk     : in std_logic;            --clock
+    rstN    : in std_logic;            --reset active-low
+    signa   : in signed(27 downto 0);  --input signal
+    DAV     : in std_logic;
+    restart : in std_logic;            --start
+    peak    : out std_logic;           --notifies that the treshold is overcome
     -- debug signals
     energy : out signed(55 downto 0); --outputs computed energy
     calc   : out std_logic            --notifies that an energy has been computed
@@ -68,7 +69,7 @@ architecture arch of PeakNoticer is
   end component comparator;
 
 --State
-  type state is(RST_S, MEASURE, FOUND_TH);
+  type state is(RST_S, IDLE, MEASURE, FOUND_TH);
   signal st                          : state;                         --state variable
 
 --Control signals
@@ -99,30 +100,60 @@ begin
 
   state_transition : process(clk)
   begin
+--    if (clk'event and clk = '1') then
+    --  if (rstN = '0') then
+      --  st <= RST_S;
+    --  else
+      --  case (st) is
+        --  when RST_S =>
+          --  if (start = '1') then
+            --  st <= MEASURE;
+            --else
+            --  st <= RST_S;
+            --end if;
+          --when MEASURE =>
+            --if (cnt_end = '1') then
+            --  st <= RST_S;
+            --elsif (cnt_end = '0' and cmp_out = '0') then
+              --st <= MEASURE;
+            --elsif (cmp_out = '1') then
+              --st <= FOUND_TH;
+            --else
+              --st <= RST_S;
+            --end if;
+          --when FOUND_TH =>
+            --if (start = '1') then
+              --st <= RST_S;
+            --else
+              --st <= FOUND_TH;
+            --end if;
+          --when others =>
+            --st <= RST_S;
+        --end case;
+      --end if;
+    --end if;
     if (clk'event and clk = '1') then
-      if (rstN = '0') then
+      if (rstN='0') then
         st <= RST_S;
       else
         case (st) is
           when RST_S =>
-            if (start = '1') then
+            st <= IDLE;
+          when IDLE =>
+            if (DAV='1') then
               st <= MEASURE;
-            else
+            elsif (DAV = '0' and cnt_end = '0') then
+              st <= IDLE;
+            elsif (cnt_end = '1') then
               st <= RST_S;
+            elsif (cmp_out='1') then
+              st <= FOUND_TH;
             end if;
           when MEASURE =>
-            if (cnt_end = '1') then
-              st <= RST_S;
-            elsif (cnt_end = '0' and cmp_out = '0') then
-              st <= MEASURE;
-            elsif (cmp_out = '1') then
-              st <= FOUND_TH;
-            else
-              st <= RST_S;
-            end if;
+            st <= IDLE;
           when FOUND_TH =>
-            if (start = '1') then
-              st <= RST_S;
+            if (restart = '0') then
+              st <= FOUND_TH;
             else
               st <= FOUND_TH;
             end if;
@@ -154,6 +185,8 @@ begin
         en_cnt            <= '1';
         en_buffer_reg     <= '1';
         en_accumulator    <= '1';
+      when IDLE =>
+
       when FOUND_TH =>
         peak              <= '1';
       when others =>
