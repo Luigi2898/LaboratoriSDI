@@ -13,23 +13,26 @@ architecture arch of testbench_PeakNoticer is
   port (
     clk    : in  std_logic;
     rstN   : in  std_logic;
-    signa  : in  signed(13 downto 0);
-    start  : in  std_logic;
+    signa  : in  signed(27 downto 0);
+    DAV     : in std_logic;
+    restart  : in  std_logic;
     peak   : out std_logic;
-    energy : out signed(37 downto 0);
+    energy : out signed(55 downto 0);
     calc   : out std_logic
   );
   end component PeakNoticer;
 
   signal clk    : std_logic;
   signal rstN   : std_logic;
-  signal data_i : signed(13 downto 0);
+  signal data_i : signed(27 downto 0);
   signal start  : std_logic;
   signal peak   : std_logic;
-  signal energy : signed(37 downto 0);
-  signal calc   : std_logic;
+  signal energy : signed(55 downto 0);
+  signal calc, dav   : std_logic;
 
 begin
+
+  dav <= '1';
 
   start_p : process
 	begin
@@ -63,7 +66,7 @@ begin
 
     file inFile : text is in "input.txt";
     variable l : line;
-    variable n : std_logic_vector(13 downto 0);
+    variable n : std_logic_vector(27 downto 0);
 
   begin
     wait for 40 ns;
@@ -76,6 +79,6 @@ begin
     wait;
   end process;
 
-  pn : PeakNoticer port map(clk, rstN, data_i, start, peak, energy, calc);
+  pn : PeakNoticer port map(clk, rstN, data_i, dav, start, peak, energy, calc);
 
 end architecture;
