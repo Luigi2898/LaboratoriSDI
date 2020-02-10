@@ -6,31 +6,24 @@ entity PeakNoticer is
   port (
     clk    : in std_logic;            --clock
     rstN   : in std_logic;            --reset active-low
-    signa  : in signed(13 downto 0);  --input signal
+    signa  : in signed(27 downto 0);  --input signal
     start  : in std_logic;            --start
     peak   : out std_logic;           --notifies that the treshold is overcome
     -- debug signals
-    energy : out signed(37 downto 0); --outputs computed energy
+    energy : out signed(55 downto 0); --outputs computed energy
     calc   : out std_logic            --notifies that an energy has been computed
   );
 end entity;
---TODO parallelismo a 28 bit
 --TODO aggiungere data_valid
 architecture arch of PeakNoticer is
-  --FIXME Cambiare con reg
-  component Registro is
-    generic(
-      Nbit : integer := 8
-    );
-    port (
-     DataIn  : in signed(Nbit-1 downto 0);
-     DataOut : out signed(Nbit-1 downto 0);
-     clock   : in std_logic;
-     reset   : in std_logic;
-     enable  : in std_logic
-    );
-  end component;
 
+  component REG IS
+  	GENERIC(N : INTEGER := 8);
+  	PORT(REG_IN : IN signed(N-1 DOWNTO 0);
+  		 REG_OUT : OUT signed(N-1 DOWNTO 0);
+  		 CLK, RST, LOAD : IN STD_LOGIC
+  	);
+  END component;
   component N_COUNTER IS
     GENERIC(
       N      : INTEGER:= 12;
@@ -46,9 +39,10 @@ architecture arch of PeakNoticer is
   END component;
 
   component square is
+    generic (N : integer := 8);
     port (
-      in1 : in signed(13 downto 0);
-      sq  : out signed(27 downto 0)
+      in1 : in  signed(N - 1 downto 0);
+      sq  : out signed(N * 2 - 1 downto 0)
     );
   end component;
 
@@ -64,8 +58,11 @@ architecture arch of PeakNoticer is
   end component ADD_SUB;
 
   component comparator
+    generic (
+      N : integer := 8
+    );
     port (
-      to_cmp, to_be_cmp : in  signed(37 downto 0);
+      to_cmp, to_be_cmp : in  signed(N - 1 downto 0);
       maj               : out std_logic
     );
   end component comparator;
@@ -80,18 +77,18 @@ architecture arch of PeakNoticer is
   signal en_buffer_reg               : std_logic;                     --buffer_reg
   signal reset_accumulator           : std_logic;                     --accumulator
   signal en_accumulator              : std_logic;                     --accumulator
-  signal add_sub                     : std_logic;                     --adder
+  signal add_sub_c                   : std_logic;                     --adder
 
 --State signals
   signal cnt_end                     : std_logic;                     --counter
   signal cmp_out                     : std_logic;                     --comparator
 
 --Data signals
-  signal buffer_out                  : signed(13 downto 0);           --buffer_reg
-  signal next_energy, present_energy : signed(37 downto 0);           --accumulator
-  signal square_out                  : signed(27 downto 0);           --square
-  signal square_out_ext              : signed(37 downto 0);           --square out extended
-  signal treshold                    : signed(37 downto 0);           --comparator
+  signal buffer_out                  : signed(27 downto 0);           --buffer_reg
+  signal next_energy, present_energy : signed(55 downto 0);           --accumulator
+  signal square_out                  : signed(55 downto 0);           --square
+  --signal square_out_ext              : signed(37 downto 0);           --square out extended
+  signal treshold                    : signed(55 downto 0);           --comparator
 
 --Dumb signals
   signal cnt_out_D                   : unsigned(9 downto 0);          --counter
@@ -146,20 +143,21 @@ begin
     reset_accumulator <= '1';
     en_accumulator    <= '0';
     peak              <= '0';
+    add_sub_c         <= '1';
 
     case (st) is
       when RST_S =>
-        rst_cnt         <= '0';
+        rst_cnt           <= '0';
         reset_buffer_reg  <= '0';
         reset_accumulator <= '0';
       when MEASURE =>
-        en_cnt         <= '1';
-        en_buffer_reg  <= '1';
-        en_accumulator <= '1';
+        en_cnt            <= '1';
+        en_buffer_reg     <= '1';
+        en_accumulator    <= '1';
       when FOUND_TH =>
-        peak <= '1';
+        peak              <= '1';
       when others =>
-        rst_cnt         <= '0';
+        rst_cnt           <= '0';
         reset_buffer_reg  <= '0';
         reset_accumulator <= '0';
     end case;
@@ -170,24 +168,26 @@ begin
   counter     : n_counter generic map(10, 1000)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
-  buffer_reg  : registro generic map(14)
+  buffer_reg  : reg      generic map(28)
                          port map(signa, buffer_out, clk, reset_buffer_reg, en_buffer_reg);
 
-  accumulator : registro generic map(38)
+  accumulator : reg      generic map(56)
                          port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
 
-  squa        : square port map(buffer_out, square_out);
+  squa        : square generic map(28)
+                       port map(buffer_out, square_out);
 
-  square_out_ext(27 downto 0) <= square_out;
-  square_out_ext(37 downto 28) <= (others => square_out(27));
+  --square_out_ext(27 downto 0) <= square_out;
+  --square_out_ext(37 downto 28) <= (others => square_out(27));
 
-  add         : ADD_SUB generic map()
-                        port map(square_out_ext, present_energy, next_energy, add_sub);
+  add         : ADD_SUB generic map(56)
+                        port map(square_out, present_energy, next_energy, add_sub_c);
 
   treshold(37) <= '0';
   treshold(36 downto 0) <= (others => '1');
 
-  cmp         : comparator port map (present_energy, treshold, cmp_out);
+  cmp         : comparator generic map(56)
+                           port map (present_energy, treshold, cmp_out);
 
 --Debug
   energy <= next_energy;
