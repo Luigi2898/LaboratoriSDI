@@ -30,7 +30,7 @@ architecture arch of PeakNoticer is
      enable  : in std_logic
     );
   end component;
-  --FIXME Cambiare con N_counter
+
   component N_COUNTER IS
     GENERIC(
       N      : INTEGER:= 12;
@@ -51,13 +51,17 @@ architecture arch of PeakNoticer is
       sq  : out signed(27 downto 0)
     );
   end component;
-  --FIXME Usare add_sub
-  component adder is
-    port (
-      in1, in2 : in signed(37 downto 0);
-      res      : out signed(37 downto 0)
-    );
-  end component;
+
+  component ADD_SUB
+  generic (
+    N_AS : INTEGER := 20
+  );
+  port (
+    IN_AS_1, IN_AS_2 : IN  SIGNED(N_AS-1 DOWNTO 0);
+    AS_OUT           : OUT SIGNED(N_AS-1 DOWNTO 0);
+    PDM              : IN  std_logic
+  );
+  end component ADD_SUB;
 
   component comparator
     port (
@@ -76,6 +80,7 @@ architecture arch of PeakNoticer is
   signal en_buffer_reg               : std_logic;                     --buffer_reg
   signal reset_accumulator           : std_logic;                     --accumulator
   signal en_accumulator              : std_logic;                     --accumulator
+  signal add_sub                     : std_logic;                     --adder
 
 --State signals
   signal cnt_end                     : std_logic;                     --counter
@@ -176,7 +181,8 @@ begin
   square_out_ext(27 downto 0) <= square_out;
   square_out_ext(37 downto 28) <= (others => square_out(27));
 
-  add         : adder port map(square_out_ext, present_energy, next_energy);
+  add         : ADD_SUB generic map()
+                        port map(square_out_ext, present_energy, next_energy, add_sub);
 
   treshold(37) <= '0';
   treshold(36 downto 0) <= (others => '1');
