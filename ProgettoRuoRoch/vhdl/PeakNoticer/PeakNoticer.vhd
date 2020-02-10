@@ -14,9 +14,10 @@ entity PeakNoticer is
     calc   : out std_logic            --notifies that an energy has been computed
   );
 end entity;
-
+--TODO parallelismo a 28 bit
+--TODO aggiungere data_valid
 architecture arch of PeakNoticer is
-
+  --FIXME Cambiare con reg
   component Registro is
     generic(
       Nbit : integer := 8
@@ -29,7 +30,7 @@ architecture arch of PeakNoticer is
      enable  : in std_logic
     );
   end component;
-
+  --FIXME Cambiare con N_counter
   component N_COUNTER IS
     GENERIC(
       N      : INTEGER:= 12;
@@ -50,7 +51,7 @@ architecture arch of PeakNoticer is
       sq  : out signed(27 downto 0)
     );
   end component;
-
+  --FIXME Usare add_sub
   component adder is
     port (
       in1, in2 : in signed(37 downto 0);
