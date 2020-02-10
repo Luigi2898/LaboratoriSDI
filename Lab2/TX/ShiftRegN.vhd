@@ -2,42 +2,42 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-entity ShiftRegN is
-  generic(
-    N : integer := 10
+ENTITY SHIFTREGN IS
+  GENERIC(
+    N : INTEGER := 10
   );
-  port (
-    clock    : in std_logic;
-    shift_en : in std_logic;
-    load_en  : in std_logic;
-    rstN     : in std_logic;
-    D_in     : in std_logic_vector(N-3 downto 0);
-    D_out    : out std_logic
+  PORT (
+    CLOCK    : IN STD_LOGIC;
+    SHIFT_EN : IN STD_LOGIC;
+    LOAD_EN  : IN STD_LOGIC;
+    RSTN     : IN STD_LOGIC;
+    D_IN     : IN STD_LOGIC_VECTOR(N-3 DOWNTO 0);
+    D_OUT    : OUT STD_LOGIC
   );
-end entity;
+END ENTITY;
 
-architecture Behavioural of ShiftRegN is
+ARCHITECTURE BEHAVIOURAL OF SHIFTREGN IS
 
-  signal reg : std_logic_vector(N-1 downto 0);
+  SIGNAL REG : STD_LOGIC_VECTOR(N-1 DOWNTO 0);
 
-begin
+BEGIN
 
-  Shift : process(clock)
-  begin
-    if (clock'event and clock = '1') then
-      if (rstN = '0') then
-        reg <= (others => '1');
-      elsif (load_en = '1') then
-          reg(N-1)         <= '1';
-          reg(0)           <= '0';
-          reg(N-2 downto 1) <= D_in;
-        elsif (shift_en = '1') then
-          D_out <= reg(0);
-          for i in 0 to N-2 loop
-            reg(i) <= reg(i+1);
-          end loop;
-        end if;
-      end if;
-  end process;
+  SHIFT : PROCESS(CLOCK)
+  BEGIN
+    IF (CLOCK'EVENT AND CLOCK = '1') THEN
+      IF (RSTN = '0') THEN
+        REG <= (OTHERS => '1');
+      ELSIF (LOAD_EN = '1') THEN
+          REG(N-1)         <= '1';
+          REG(0)           <= '0';
+          REG(N-2 DOWNTO 1) <= D_IN;
+        ELSIF (SHIFT_EN = '1') THEN
+          D_OUT <= REG(0);
+          FOR I IN 0 TO N-2 LOOP
+            REG(I) <= REG(I+1);
+          END LOOP;
+        END IF;
+      END IF;
+  END PROCESS;
 
-end architecture;
+END ARCHITECTURE;
