@@ -1,0 +1,16 @@
+I)     AbR1
+II)    Mux1 => R1 Mux6 => mult AbR7 AbR3 AbR5 Mult2
+III)   AbR2 Mux1 => R6 Mux2 => R3 Mult
+IV)    AbR4 AbR6 Mux2 => R2 Mult2 AbR8
+V)     Mux2 => R4 Mux1 => R6 AbR9 Mult
+VI)    Mux1 => R6 Mux2 => R3 Mult
+VII)   Mux3 => R1 Mux5 => Sum Mux1 => R5 Mux2 => R4 Mult AbR9 Ab R10
+VIII)  Mux8 => R9 AbR9 Mux5 => Sub AbR10
+IX)    Mux7 => R7 (Ar') Mux8 => R7 AbR7 Mux3 => R2 Mux6 => Sub Mux5 => Sum AbR10 AbR9 ROMROU + I
+X)     Mux7 => R7 (Br') ROMROU AbR10 Mux3 => R10 Mux5 => Sum                                 + II
+XI)    Mux7 => R10 (Ai') Mux8 => R8 Mux5 => Sum AbR10 ROMROU                                 + III
+XII)   Mux7 => R10 (Bi') ROMROU                                                              + IV
+XIII)                                                                                        + V
+XIV)                                                                                         + VI
+XV)                                                                                          + VII
+XVI)                                                                                         + VIII
