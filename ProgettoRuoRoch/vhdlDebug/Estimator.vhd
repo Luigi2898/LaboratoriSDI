@@ -115,7 +115,7 @@ begin
 
 end process;
 
-in_p : process()
+in_p : process
 
     file inFile : text is in "PDM.txt";
     variable l : line;
@@ -132,6 +132,33 @@ in_p : process()
     wait;
   end process;
 
+  out_p_sx : process(FILT_VALIDsx)
+
+  		file posFile : text is out "outfiltersx.txt";
+  		variable l : line;
+  		variable n : integer;
+
+  	begin
+  			if(filt_validsx = '1') then
+  			n := to_integer(FILTER_OUTsx);
+  			write(l,n);
+  			writeline(posFile, l);
+  			end if;
+  	end process;
+
+    out_p_dx : process(FILT_VALIDdx)
+
+    		file posFile : text is out "outfilterdx.txt";
+    		variable l : line;
+    		variable n : integer;
+
+    	begin
+    			if(filt_validdx = '1') then
+    			n := to_integer(FILTER_OUTdx);
+    			write(l,n);
+    			writeline(posFile, l);
+    			end if;
+    	end process;
 --PEAK
 clk_peak_pro : process
 begin
