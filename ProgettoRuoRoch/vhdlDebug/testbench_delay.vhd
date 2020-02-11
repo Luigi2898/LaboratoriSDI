@@ -10,7 +10,7 @@ architecture beh of testbench_delay is
   COMPONENT compute_delay is
       port (clk : in std_logic;
         rst   : in std_logic;
-        DELAY_OUT : BUFFER SIGNED(9 DOWNTO 0);
+        DELAY_OUT : BUFFER SIGNED(11 DOWNTO 0);
         MSB   : OUT STD_LOGIC;
         PEAK1 : IN STD_LOGIC;
         PEAK2 : IN STD_LOGIC;
@@ -20,7 +20,7 @@ architecture beh of testbench_delay is
   );
   end COMPONENT;
 
-SIGNAL DELAY_OUT : SIGNED(9 DOWNTO 0);
+SIGNAL DELAY_OUT : SIGNED(11 DOWNTO 0);
 SIGNAL clk, rst ,MSB, RESTART, SIMULTANEOUS, DONE : STD_LOGIC;
 signal PEAK1, PEAK2 : std_logic := '0';
 begin

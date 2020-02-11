@@ -5,7 +5,7 @@ library ieee;
 entity compute_delay is
   port (clk : in std_logic;
         rst   : in std_logic;
-        DELAY_OUT : BUFFER SIGNED(9 DOWNTO 0);
+        DELAY_OUT : BUFFER SIGNED(11 DOWNTO 0);
         MSB   : OUT STD_LOGIC;
         PEAK1 : IN STD_LOGIC;
         PEAK2 : IN STD_LOGIC;
@@ -17,7 +17,7 @@ end entity;
 
 architecture arch of compute_delay is
   COMPONENT DP_DELAY IS
-  PORT(CLK           : IN STD_LOGIC;
+  PORT(CLK         : IN STD_LOGIC;
      RST_DP        : IN STD_LOGIC;
      EN_CNT_DELAY  : IN STD_LOGIC;
      RST_CNT_DELAY : IN STD_LOGIC;
@@ -26,7 +26,7 @@ architecture arch of compute_delay is
      EN_FIRST      : IN STD_LOGIC;
      EN_SECOND     : IN STD_LOGIC;
      DELAY_END     : OUT STD_LOGIC;
-     DELAY_OUT     : BUFFER SIGNED(9 DOWNTO 0); --AGGIUNGERE BIT
+     DELAY_OUT     : BUFFER SIGNED(11 DOWNTO 0); --AGGIUNGERE BIT
      MSB           : OUT STD_LOGIC;
      EN_DELAY_OUT  : IN STD_LOGIC;
      SUB           : IN STD_LOGIC
