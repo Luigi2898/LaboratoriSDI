@@ -3,7 +3,7 @@ library ieee;
   use ieee.numeric_std.all;
   use ieee.std_logic_textio.all;
   use std.textio.all;
-  
+
 entity Estimator is
 end entity;
 
@@ -73,11 +73,9 @@ architecture arch of Estimator is
 
 begin
 
-clkN <= not(clkfil);
-
 sx_fil : DECIMATOR_FIR port map(clkfil, rst, startfilsx, pdm_in, FILTER_OUTsx, FILT_VALIDsx);
 
-dx_fil : DECIMATOR_FIR port map(clkN, rst, startfildx, pdm_in, FILTER_OUTdx, FILT_VALIDdx);
+dx_fil : DECIMATOR_FIR port map(clkfil, rst, startfildx, pdm_in, FILTER_OUTdx, FILT_VALIDdx);
 
 pnsx : PeakNoticer port map(clkpeak, rst, FILTER_OUTsx, FILT_VALIDsx, restart, peaksx, energysx, calcsx);
 
@@ -92,7 +90,7 @@ begin
   rst <= '1';
   wait for 1 ns;
   rst <= '0';
-  wait for 30 ns;
+  wait for 60 ns;
   rst <= '1';
   wait;
 end process;
@@ -109,29 +107,27 @@ end process;
 start_fil_pro : process
 begin
   startfilsx <= '0';
-  startfildx <= '0';
-  wait for 35 ns;
   startfildx <= '1';
-  startfilsx <= '1';
-  wait for 10 ns;
-  startfildx <= '0';
+  wait for 0.5 us;
+  startfildx <= '1';
   startfilsx <= '0';
-  wait;
+  wait for 0.5 us;
+
 end process;
 
-in_p : process
+in_p : process()
 
     file inFile : text is in "PDM.txt";
     variable l : line;
     variable n : std_logic;
 
   begin
-    wait for 45 ns;
+    wait for 70 ns;
     while (endfile(inFile) = false) loop
       readline(inFile, l);
       read(l,n);
       pdm_in <= n;
-      wait for 5 ns;
+      wait for 500 ns;
     end loop;
     wait;
   end process;
@@ -140,17 +136,17 @@ in_p : process
 clk_peak_pro : process
 begin
   clkpeak <= '0';
-  wait for 10 ns;
+  wait for 50 ns;
   clkpeak <= '1';
-  wait for 10 ns;
+  wait for 50 ns;
 end process;
 
 --DELAY
 clk_delay_pro : process
 begin
   clkdelay <= '0';
-  wait for 20 ns;
+  wait for 12.5 ns;
   clkdelay <= '1';
-  wait for 20 ns;
+  wait for 12.5 ns;
 end process;
 end architecture;
