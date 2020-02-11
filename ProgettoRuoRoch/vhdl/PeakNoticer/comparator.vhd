@@ -5,7 +5,7 @@ library ieee;
 entity comparator is
   generic (N : integer := 8);
   port (
-    to_cmp, to_be_cmp : in signed(N - 1 downto 0);
+    to_cmp, to_be_cmp : in unsigned(N - 1 downto 0);
     maj               : out std_logic
   );
 end entity;

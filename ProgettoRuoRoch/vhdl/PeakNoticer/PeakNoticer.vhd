@@ -11,7 +11,7 @@ entity PeakNoticer is
     restart : in std_logic;            --start
     peak    : out std_logic;           --notifies that the treshold is overcome
     -- debug signals
-    energy : out signed(55 downto 0); --outputs computed energy
+    energy : out signed(66 downto 0); --outputs computed energy
     calc   : out std_logic            --notifies that an energy has been computed
   );
 end entity;
@@ -63,7 +63,7 @@ architecture arch of PeakNoticer is
       N : integer := 8
     );
     port (
-      to_cmp, to_be_cmp : in  signed(N - 1 downto 0);
+      to_cmp, to_be_cmp : in  unsigned(N - 1 downto 0);
       maj               : out std_logic
     );
   end component comparator;
@@ -86,13 +86,13 @@ architecture arch of PeakNoticer is
 
 --Data signals
   signal buffer_out                  : signed(27 downto 0);           --buffer_reg
-  signal next_energy, present_energy : signed(55 downto 0);           --accumulator
+  signal next_energy, present_energy : signed(66 downto 0);           --accumulator
   signal square_out                  : signed(55 downto 0);           --square
-  --signal square_out_ext              : signed(37 downto 0);           --square out extended
-  signal treshold                    : signed(55 downto 0);           --comparator
+  signal square_out_ext              : signed(66 downto 0);           --square out extended
+  signal treshold                    : unsigned(66 downto 0);           --comparator
 
 --Dumb signals
-  signal cnt_out_D                   : unsigned(9 downto 0);          --counter
+  signal cnt_out_D                   : unsigned(13 downto 0);          --counter
 
 begin
 
@@ -140,14 +140,14 @@ begin
           when RST_S =>
             st <= IDLE;
           when IDLE =>
-            if (DAV='1') then
-              st <= MEASURE;
+            if (cmp_out='1') then
+              st <= FOUND_TH;
             elsif (DAV = '0' and cnt_end = '0') then
               st <= IDLE;
             elsif (cnt_end = '1') then
               st <= RST_S;
-            elsif (cmp_out='1') then
-              st <= FOUND_TH;
+            elsif (dav='1') then
+              st <= MEASURE;
             end if;
           when MEASURE =>
             st <= IDLE;
@@ -155,7 +155,7 @@ begin
             if (restart = '0') then
               st <= FOUND_TH;
             else
-              st <= FOUND_TH;
+              st <= RST_S;
             end if;
           when others =>
             st <= RST_S;
@@ -198,29 +198,29 @@ begin
 
 --Datapath
 
-  counter     : n_counter generic map(10, 1000)
+  counter     : n_counter generic map(14, 16000)
                           port map(clk, en_cnt, rst_cnt, cnt_end, cnt_out_D);
 
   buffer_reg  : reg      generic map(28)
                          port map(signa, buffer_out, clk, reset_buffer_reg, en_buffer_reg);
 
-  accumulator : reg      generic map(56)
+  accumulator : reg      generic map(67)
                          port map(next_energy, present_energy, clk, reset_accumulator, en_accumulator);
 
   squa        : square generic map(28)
                        port map(buffer_out, square_out);
 
-  --square_out_ext(27 downto 0) <= square_out;
-  --square_out_ext(37 downto 28) <= (others => square_out(27));
+  --Estiensione perchè devo considerare i mille campioni
+  square_out_ext(55 downto 0) <= square_out;
+  square_out_ext(66 downto 56) <= (others => '0');
 
-  add         : ADD_SUB generic map(56)
-                        port map(square_out, present_energy, next_energy, add_sub_c);
+  add         : ADD_SUB generic map(67)
+                        port map(square_out_ext, present_energy, next_energy, add_sub_c);
 
-  treshold(37) <= '0';
-  treshold(36 downto 0) <= (others => '1');
+  treshold <= "0000001101111111010101100111110101111111001110101100001001010101000";
 
-  cmp         : comparator generic map(56)
-                           port map (present_energy, treshold, cmp_out);
+  cmp         : comparator generic map(67)
+                           port map (unsigned(present_energy), treshold, cmp_out);
 
 --Debug
   energy <= next_energy;

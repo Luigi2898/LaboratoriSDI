@@ -12,7 +12,7 @@ architecture arch of Estimator is
   port (
     clk          : in  std_logic;
     rst          : in  std_logic;
-    DELAY_OUT    : BUFFER SIGNED(9 DOWNTO 0);
+    DELAY_OUT    : BUFFER SIGNED(11 DOWNTO 0);
     MSB          : OUT STD_LOGIC;
     PEAK1        : IN  STD_LOGIC;
     PEAK2        : IN  STD_LOGIC;
@@ -42,7 +42,7 @@ architecture arch of Estimator is
     DAV     : in  std_logic;
     restart : in  std_logic;
     peak    : out std_logic;
-    energy  : out signed(55 downto 0);
+    energy  : out signed(66 downto 0);
     calc    : out std_logic
   );
   end component PeakNoticer;
@@ -59,13 +59,13 @@ architecture arch of Estimator is
   signal clkpeak : std_logic;
   signal restart : std_logic;
   signal peaksx : std_logic;
-  signal energysx : signed(55 downto 0);
+  signal energysx : signed(66 downto 0);
   signal calcsx : std_logic;
   signal peakdx : std_logic;
-  signal energydx : signed(55 downto 0);
+  signal energydx : signed(66 downto 0);
   signal calcdx : std_logic;
   signal clkdelay : std_logic;
-  signal delay : signed(9 downto 0);
+  signal delay : signed(11 downto 0);
   signal msb : std_logic;
   signal SIMULTANEOUS : std_logic;
   signal done : std_logic;
@@ -109,8 +109,8 @@ begin
   startfilsx <= '0';
   startfildx <= '1';
   wait for 0.5 us;
-  startfildx <= '1';
-  startfilsx <= '0';
+  startfildx <= '0';
+  startfilsx <= '1';
   wait for 0.5 us;
 
 end process;
@@ -163,9 +163,9 @@ in_p : process
 clk_peak_pro : process
 begin
   clkpeak <= '0';
-  wait for 50 ns;
+  wait for 5 ns;
   clkpeak <= '1';
-  wait for 50 ns;
+  wait for 5 ns;
 end process;
 
 --DELAY
