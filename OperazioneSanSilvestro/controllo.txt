@@ -1,16 +1,27 @@
 I)     AbR1
-II)    Mux1 => R1 Mux6 => mult AbR7 AbR3 AbR5 Mult2
+II)    Mux2 => R1 AbR7 AbR3 AbR5 Mult2 Mux5 => mult
 III)   AbR2 Mux1 => R6 Mux2 => R3 Mult
 IV)    AbR4 AbR6 Mux2 => R2 Mult2 AbR8
 V)     Mux2 => R4 Mux1 => R6 AbR9 Mult
 VI)    Mux1 => R6 Mux2 => R3 Mult
-VII)   Mux3 => R1 Mux5 => Sum Mux1 => R5 Mux2 => R4 Mult AbR9 Ab R10
-VIII)  Mux8 => R9 AbR9 Mux5 => Sub AbR10
-IX)    Mux7 => R7 (Ar') Mux8 => R7 AbR7 Mux3 => R2 Mux6 => Sub Mux5 => Sum AbR10 AbR9 ROMROU + I
-X)     Mux7 => R7 (Br') ROMROU AbR10 Mux3 => R10 Mux5 => Sum       + II
-XI)    Mux7 => R10 (Ai') Mux8 => R8 Mux5 => Sum AbR10 ROMROU        + III
-XII)   Mux7 => R10 (Bi') ROMROU                                    + IV
+VII)   Mux3 => R1 Mux4 => Sum Mux1 => R5 Mux2 => R4 Mult AbR9 Ab R10
+VIII)  Mux8 => R9 AbR9 Mux4 => Sub AbR10 Mux7 => R10
+IX)    Mux6 => R7 (Ar') Mux8 => R7 AbR7 Mux3 => R2 Mux5 => Sub Mux4 => Sum AbR10 AbR9 ROMROU Mux7 => R10 + I
+X)     Mux6 => R7 (Br') ROMROU AbR10 Mux3 => R10 Mux4 => Sum       + II
+XI)    Mux6 => R10 (Ai') Mux8 => R8 Mux4 => Sum AbR10 ROMROU             Mux7 => R10 + III
+XII)   Mux6 => R10 (Bi') ROMROU                              + IV
 XIII)                                                               + V
 XIV)                                                  + VI
 XV)                                         + VII
 XVI)                                                              + VIII
+
+
+
+IN_MUX1 <= OUT_R6 & OUT_R5;
+IN_MUX2 <= OUT_R4 & OUT_R3 & OUT_R2 & OUT_R1;
+IN_MUX3 <= OUT_R10 & OUT_R2_EXT & OUT_R1_EXT;
+IN_MUX4 <= OUT_ADD & OUT_SUB;
+IN_MUX5 <= OUT_SUB & RES_MULT(47 DOWNTO 1);
+IN_MUX6 <= OUT_R10 & OUT_R7;
+IN_MUX7 <= OUT_R10 & OUT_R9;
+IN_MUX8 <= OUT_R10 & OUT_R9 & OUT_R8 & OUT_R7;
