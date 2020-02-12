@@ -87,11 +87,11 @@ SIGNAL OUT_SUB, OUT_ADD : SIGNED(46 DOWNTO 0);
 SIGNAL RES_MULT: SIGNED(47 DOWNTO 0);
 ------------------------------------------------------------------------------------------------------
 BEGIN
----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 --REGISTRI--
-R1  : REGISTRO GENERIC MAP(24) PORT MAP(EXT1,OUT_R1,CONTROLS(11),CLOCK,CONTROLS(12));  --AR
+R1  : REGISTRO GENERIC MAP(24) PORT MAP(EXT1,OUT_R1,CONTROLS(11),CLOCK,CONTROLS(12)); --AR
 
-R2  : REGISTRO GENERIC MAP(24) PORT MAP(EXT1,OUT_R2,CONTROLS(10),CLOCK,CONTROLS(12));  --AI
+R2  : REGISTRO GENERIC MAP(24) PORT MAP(EXT1,OUT_R2,CONTROLS(10),CLOCK,CONTROLS(12)); --AI
 
 R3  : REGISTRO GENERIC MAP(24) PORT MAP(EXT1,OUT_R3,CONTROLS(9),CLOCK,CONTROLS(12));  --BR
 
@@ -103,9 +103,9 @@ R6  : REGISTRO GENERIC MAP(24) PORT MAP(EXT2,OUT_R6,CONTROLS(6),CLOCK,CONTROLS(1
  
 R7  : REGISTRO GENERIC MAP(47) PORT MAP(OUT_MUX6,OUT_R7,CONTROLS(5),CLOCK,CONTROLS(12));
 
-R8  : REGISTRO GENERIC MAP(47) PORT MAP(RES_MULT(47 DOWNTO 1), OUT_R8,CONTROLS(4),CLOCK, CONTROLS(12));
+R8  : REGISTRO GENERIC MAP(47) PORT MAP(RES_MULT(46 DOWNTO 0), OUT_R8,CONTROLS(4),CLOCK, CONTROLS(12));
 
-R9  : REGISTRO GENERIC MAP(47) PORT MAP(RES_MULT(47 DOWNTO 1), OUT_R9,CONTROLS(3),CLOCK, CONTROLS(12));
+R9  : REGISTRO GENERIC MAP(47) PORT MAP(RES_MULT(46 DOWNTO 0), OUT_R9,CONTROLS(3),CLOCK, CONTROLS(12));
 
 R10 : REGISTRO GENERIC MAP(47) PORT MAP(OUT_MUX5, OUT_R10, CONTROLS(2), CLOCK, CONTROLS(12));
 ----------------------------------------------------------------------------------------------------
@@ -123,18 +123,18 @@ IN_MUX1 <= OUT_R6 & OUT_R5;
 IN_MUX2 <= OUT_R4 & OUT_R3 & OUT_R2 & OUT_R1;
 IN_MUX3 <= OUT_R10 & OUT_R2_EXT & OUT_R1_EXT;
 IN_MUX4 <= OUT_ADD & OUT_SUB;
-IN_MUX5 <= OUT_SUB & RES_MULT(47 DOWNTO 1);
+IN_MUX5 <= OUT_SUB & RES_MULT(46 DOWNTO 0);
 IN_MUX6 <= OUT_R10 & OUT_R7;
 IN_MUX7 <= OUT_R10 & OUT_R9;
 IN_MUX8 <= OUT_R10 & OUT_R9 & OUT_R8 & OUT_R7;
-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
 --ESTENSIONE
 OUT_R1_EXT(46 DOWNTO 24) <= (OTHERS => OUT_R1(23));
 OUT_R1_EXT <= OUT_R1_EXT(46 DOWNTO 24) & OUT_R1;  
 
 OUT_R2_EXT(46 DOWNTO 24) <= (OTHERS => OUT_R2(23));
 OUT_R2_EXT <= OUT_R2_EXT(46 DOWNTO 24) & OUT_R2;  
-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
 --MUXES--
 MUX1 : GENERICS_MUX GENERIC MAP(INPUTS => 2, SIZE => 24) PORT MAP(IN_MUX1, TO_INTEGER(UNSIGNED(CONTROLS(24 DOWNTO 24))), OUT_MUX1);
 
@@ -154,7 +154,5 @@ MUX7 : GENERICS_MUX GENERIC MAP(INPUTS => 2, SIZE => 47) PORT MAP(IN_MUX7, TO_IN
 
 MUX8 : GENERICS_MUX GENERIC MAP(INPUTS => 4, SIZE => 47) 
                     PORT MAP(IN_MUX8, TO_INTEGER(UNSIGNED(CONTROLS(14 DOWNTO 14))), OUT_MUX8);
-----------------------------------------------------------------------------------------------------
-
-
+------------------------------------------------------------------------------------------------------------
 END ARCHITECTURE;
