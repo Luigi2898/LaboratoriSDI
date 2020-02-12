@@ -6,17 +6,17 @@ library ieee;
 entity Multiplier is
   generic(Nbit : integer := 8);
   port (
-    In1   : in std_logic_vector(Nbit - 1 downto 0);
-    In2   : in std_logic_vector(Nbit - 1 downto 0);
+    In1   : in signed(Nbit - 1 downto 0);
+    In2   : in signed(Nbit - 1 downto 0);
     Mult2 : in std_logic; -- Se '1' multiplica In1 per 2, altrimenti moltiplica i due ingressi
     clk   : in std_logic;
-    Res   : out std_logic_vector(2 * Nbit - 1 downto 0)
+    Res   : out signed(2 * Nbit - 2 downto 0)
   );
 end entity;
 
 architecture behavioural of Multiplier is
 
-  signal mult, mult_f, mult_s, shift : std_logic_vector(2 * Nbit - 1 downto 0);
+  signal mult, mult_f, mult_s, shift : signed(2 * Nbit - 1 downto 0);
 
 begin
 
@@ -32,5 +32,5 @@ begin
       mult_s <= mult_f;
     end if;
   end process;
-  Res <= mult_s when Mult2 = '0' else shift when Mult2 = '1';
+  Res <= mult_s(Nbit*2 - 2 downto 0) when Mult2 = '0' else shift(Nbit*2 - 2 downto 0) when Mult2 = '1';
 end architecture;

@@ -30,7 +30,7 @@ architecture behavioural of uSequencer is
 
 
   signal uAR   : integer;
-  signal uIR1  : signed(24 downto 0);
+  signal uIR1  : signed(24 downto 0) := (others => '0');
   signal uAR_u : unsigned(3 downto 0);
 
 begin
@@ -58,7 +58,11 @@ begin
           end if;
           if uAR = 12 then
             uAR <= 0;
+            done <= '1';
           end if;
+          if uAR = 10 then
+            str_nxt <= '1';
+        end if;
         end if;
       end if;
       if clk'event and clk = '0' then
