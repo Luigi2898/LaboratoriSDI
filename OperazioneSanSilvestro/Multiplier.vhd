@@ -19,7 +19,7 @@ architecture behavioural of Multiplier is
   signal mult, mult_f, mult_s, shift : signed(2 * Nbit - 1 downto 0);
 
 begin
-
+--FIXME AGGIUNGERE RESET!!!!!!!!
   mult <= In1 * In2;
   shift(0) <= '0';
   shift(Nbit downto 1) <= In1;

@@ -41,8 +41,8 @@ begin
 
   seq : process(clk)
     begin
-      str_nxt <= '0';
-      done <= '0';
+      --str_nxt <= '0';
+    --  done <= '0';
       if clk'event and clk = '1' then --IL uAR SI AGGIORNA SUL FRONTE DI SALITA
         if rst = '0' then
           uAR <= 0;
@@ -53,15 +53,13 @@ begin
             uAR <= uAR + 1;
           elsif start = '1' then
             uAR <= uAR + 1;
-          --else
-            --uAR <= uAR + 1;
           end if;
           if uAR = 12 then
             uAR <= 0;
-            done <= '1';
+          --  done <= '1';
           end if;
           if uAR = 10 then
-            str_nxt <= '1';
+          --  str_nxt <= '1';
         end if;
         end if;
       end if;

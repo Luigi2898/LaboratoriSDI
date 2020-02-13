@@ -132,10 +132,10 @@ IN_MUX8 <= OUT_R10 & OUT_R9 & OUT_R8 & OUT_R7;
 -----------------------------------------------------------------------------------------------------------
 --ESTENSIONE
 OUT_R1_EXT(46 DOWNTO 24) <= (OTHERS => OUT_R1(23));
-OUT_R1_EXT <= OUT_R1_EXT(46 DOWNTO 24) & OUT_R1;
+OUT_R1_EXT(23 downto 0) <=  OUT_R1;
 
 OUT_R2_EXT(46 DOWNTO 24) <= (OTHERS => OUT_R2(23));
-OUT_R2_EXT <= OUT_R2_EXT(46 DOWNTO 24) & OUT_R2;
+OUT_R2_EXT(23 downto 0) <=  OUT_R2;
 -----------------------------------------------------------------------------------------------------------
 --MUXES--
 ctr1 <= TO_INTEGER(UNSIGNED(CONTROLS(24 DOWNTO 24)));
