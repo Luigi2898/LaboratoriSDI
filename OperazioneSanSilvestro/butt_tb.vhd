@@ -61,6 +61,10 @@ begin
   start <= '1';
   wait for 10 ns;
   start <= '0';
+  wait for 70 ns;
+  start <= '1';
+  wait for 10 ns;
+  start <= '0';
   wait;
 end process;
 
@@ -80,6 +84,18 @@ begin
   wait for 10 ns;
   in1 <= to_signed(otto, 24);
   in2 <= to_signed(dieci, 24);
+  wait for 50 ns;
+  in1 <= to_signed(sei, 24);
+  in2 <= to_signed(zero, 24);
+  wait for 10 ns;
+  in1 <= to_signed(otto, 24);
+  in2 <= to_signed(dieci, 24);
+  wait for 10 ns;
+  in1 <= to_signed(nove, 24);
+  in2 <= to_signed(dieci, 24);
+  wait for 10 ns;
+  in1 <= to_signed(cinque, 24);
+  in2 <= to_signed(sette, 24);
   wait;
 end process;
 
