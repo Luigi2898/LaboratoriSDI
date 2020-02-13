@@ -27,7 +27,7 @@ architecture arch of butt_tb is
   signal start_next :  std_logic;
   signal done : std_logic;
   signal cinque : integer := 5;
-  signal sei : integer := 6
+  signal sei : integer := 6;
   signal sette : integer := 7;
   signal otto : integer := 8;
   signal nove : integer := 9;
