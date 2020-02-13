@@ -79,7 +79,7 @@ begin
   in2 <= to_signed(nove, 24);
   wait for 10 ns;
   in1 <= to_signed(otto, 24);
-  in2 <= to_signed(dieci, 24);ù
+  in2 <= to_signed(dieci, 24);
   wait;
 end process;
 
