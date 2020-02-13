@@ -1,6 +1,6 @@
 file_out = open("PDM.txt","w")
-file_in_sx = open("PDMs.txt", "r").readlines()
-file_in_dx = open("PDMd.txt", "r").readlines()
+file_in_sx = open("PDMsx.txt", "r").readlines()
+file_in_dx = open("PDM_dx.txt", "r").readlines()
 
 i = 0
 while i < len(file_in_dx):
