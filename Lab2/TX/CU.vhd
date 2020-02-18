@@ -2,94 +2,96 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-entity CU is
-  port (
-    clock      : in std_logic;
-    rst        : in std_logic;
-    baud_end   : in std_logic;
-    shift_end  : in std_logic;
-    data_valid : in std_logic;
-    dp_rst     : out std_logic;
-    baud_cnt   : out std_logic;
-    shift_cnt  : out std_logic;
-    shift_en   : out std_logic;
-    load_en    : out std_logic;
-    read_en    : out std_logic;
-    txready    : out std_logic
+--CONTROL UNIT TX
+
+ENTITY CU IS
+  PORT (
+    CLOCK      : IN STD_LOGIC;
+    RST        : IN STD_LOGIC;
+    BAUD_END   : IN STD_LOGIC;
+    SHIFT_END  : IN STD_LOGIC;
+    DATA_VALID : IN STD_LOGIC;
+    DP_RST     : OUT STD_LOGIC;
+    BAUD_CNT   : OUT STD_LOGIC;
+    SHIFT_CNT  : OUT STD_LOGIC;
+    SHIFT_EN   : OUT STD_LOGIC;
+    LOAD_EN    : OUT STD_LOGIC;
+    READ_EN    : OUT STD_LOGIC;
+    TXREADY    : OUT STD_LOGIC
   );
-end entity;
+END ENTITY;
 
-architecture Behavioural of CU is
+ARCHITECTURE BEHAVIOURAL OF CU IS
 
-  type state_type is (RESET, IDLE, LOAD, TRANSMIT, BUSY);
-  signal state : state_type;
+  TYPE STATE_TYPE IS (RESET, IDLE, LOAD, TRANSMIT, BUSY);
+  SIGNAL STATE : STATE_TYPE;
 
-begin
+BEGIN
 
-  FSM : process(clock, data_valid, rst)
-  begin
+  FSM : PROCESS(CLOCK, DATA_VALID, RST)
+  BEGIN
 
-    if (clock'event and clock = '1') then
-      if (rst = '0') then
-        state <= RESET;
-      else
-      case (state) is
-        when RESET =>
-            state <= IDLE;
-        when IDLE =>
-          if (data_valid = '0') then
-            state <= IDLE;
-          else
-            state <= LOAD;
-          end if;
-        when LOAD =>
-          state <= TRANSMIT;
-        when TRANSMIT =>
-          state <= BUSY;
-        when BUSY =>
-          if (baud_end = '0') then
-            state <= BUSY;
-          else
-            if (shift_end = '0') then
-              state <= TRANSMIT;
-            else
-              state <= IDLE;
-            end if;
-          end if;
-        when others =>
-          state <= RESET;
+    IF (CLOCK'EVENT AND CLOCK = '1') THEN
+      IF (RST = '0') THEN
+        STATE <= RESET;
+      ELSE
+      CASE (STATE) IS
+        WHEN RESET =>
+            STATE <= IDLE;
+        WHEN IDLE =>
+          IF (DATA_VALID = '0') THEN
+            STATE <= IDLE;
+          ELSE
+            STATE <= LOAD;
+          END IF;
+        WHEN LOAD =>
+          STATE <= TRANSMIT;
+        WHEN TRANSMIT =>
+          STATE <= BUSY;
+        WHEN BUSY =>
+          IF (BAUD_END = '0') THEN
+            STATE <= BUSY;
+          ELSE
+            IF (SHIFT_END = '0') THEN
+              STATE <= TRANSMIT;
+            ELSE
+              STATE <= IDLE;
+            END IF;
+          END IF;
+        WHEN OTHERS =>
+          STATE <= RESET;
 
-      end case;
-    end if;
-    end if;
+      END CASE;
+    END IF;
+    END IF;
 
-  end process;
+  END PROCESS;
 
-  output_control : process(state)
-  begin
-    dp_rst    <= '1';
-    baud_cnt  <= '0';
-    shift_cnt <= '0';
-    shift_en  <= '0';
-    load_en   <= '0';
-    read_en   <= '1';
-    txready   <= '1';
-      case (state) is
-        when RESET =>
-          dp_rst   <= '0';
+  OUTPUT_CONTROL : PROCESS(STATE)
+  BEGIN
+    DP_RST    <= '1';
+    BAUD_CNT  <= '0';
+    SHIFT_CNT <= '0';
+    SHIFT_EN  <= '0';
+    LOAD_EN   <= '0';
+    READ_EN   <= '1';
+    TXREADY   <= '1';
+      CASE (STATE) IS
+        WHEN RESET =>
+          DP_RST   <= '0';
 
-        when IDLE =>
-          shift_en <= '1';
-        when LOAD =>
-          load_en <= '1';
-        when TRANSMIT =>
-          shift_en  <= '1';
-          shift_cnt <= '1';
-          txready   <= '0';
-        when BUSY =>
-          baud_cnt <= '1';
-          txready <= '0';
-      end case;
-  end process;
+        WHEN IDLE =>
+          SHIFT_EN <= '1';
+        WHEN LOAD =>
+          LOAD_EN <= '1';
+        WHEN TRANSMIT =>
+          SHIFT_EN  <= '1';
+          SHIFT_CNT <= '1';
+          TXREADY   <= '0';
+        WHEN BUSY =>
+          BAUD_CNT <= '1';
+          TXREADY <= '0';
+      END CASE;
+  END PROCESS;
 
-end architecture;
+END ARCHITECTURE;

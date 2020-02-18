@@ -10,7 +10,7 @@ entity uSequencer is
     start   : in std_logic;
     done    : out std_logic;
     str_nxt : out std_logic;
-    uIR     : buffer std_logic_vector(24 downto 0)
+    uIR     : buffer std_logic_vector(28 downto 0)
   );
 end entity;
 
@@ -30,36 +30,42 @@ architecture behavioural of uSequencer is
 
 
   signal uAR   : integer;
-  signal uIR1  : signed(24 downto 0) := (others => '0');
+  signal uIR1  : signed(28 downto 0) := (others => '0');
   signal uAR_u : unsigned(3 downto 0);
 
 begin
 
   uAR_u <= to_unsigned(uAR, 4);
-  uuROM : POLY_ROM generic map("ROM_controllo.txt", 4, 25)
+  uuROM : POLY_ROM generic map("ROM_controllo.txt", 4, 29)
                    port map(uAR_u, uIR1);
 
   seq : process(clk)
     begin
-      --str_nxt <= '0';
-    --  done <= '0';
       if clk'event and clk = '1' then --IL uAR SI AGGIORNA SUL FRONTE DI SALITA
         if rst = '0' then
           uAR <= 0;
+          str_nxt <= '0';
+          done <= '0';
         else
-          if start = '1' and uIR(0) = '1' then
+          if start = '1' and uIR(4) = '1' then
             uAR <= 1;
+            str_nxt <= '0';
+            done <= '0';
           elsif start = '0' and not(uAR = 0) then
             uAR <= uAR + 1;
+            str_nxt <= '0';
+            done <= '0';
           elsif start = '1' then
             uAR <= uAR + 1;
+            str_nxt <= '0';
+            done <= '0';
           end if;
           if uAR = 12 then
             uAR <= 0;
-          --  done <= '1';
+            done <= '1';
           end if;
-          if uAR = 10 then
-          --  str_nxt <= '1';
+          if uAR = 7 then
+            str_nxt <= '1';
         end if;
         end if;
       end if;

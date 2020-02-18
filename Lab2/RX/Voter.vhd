@@ -1,21 +1,21 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
-entity voter is
-  port (
+ENTITY VOTER IS
+  PORT (
 
-  in1 : in std_logic;
-  in2 : in std_logic;
-  in3 : in std_logic;
-  winner : out std_logic
+  IN1 : IN STD_LOGIC;
+  IN2 : IN STD_LOGIC;
+  IN3 : IN STD_LOGIC;
+  WINNER : OUT STD_LOGIC
 
   );
-end entity;
+END ENTITY;
 
-architecture behavioural of  voter is
+ARCHITECTURE BEHAVIOURAL OF  VOTER IS
 
-begin
+BEGIN
 
-  winner <= (in1 and in2) or (in1 and in3) or (in2 and in3);
+  WINNER <= (IN1 AND IN2) OR (IN1 AND IN3) OR (IN2 AND IN3);
 
-end architecture;
+END ARCHITECTURE;

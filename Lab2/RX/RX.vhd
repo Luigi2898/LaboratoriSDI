@@ -1,19 +1,19 @@
-library ieee;
-  use ieee.std_logic_1164.all;
+LIBRARY IEEE;
+  USE IEEE.STD_LOGIC_1164.ALL;
 
-entity  RX is
-  port (
-  clk : in std_logic;
-  rst : in std_logic;
-  rx : in std_logic;
-  rd : in std_logic;
-  data : out std_logic_vector(7 downto 0);
-  dav : out std_logic
+ENTITY  RX IS
+  PORT (
+  CLK : IN STD_LOGIC;
+  RST : IN STD_LOGIC;
+  RX : IN STD_LOGIC;
+  RD : IN STD_LOGIC;
+  DATA : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+  DAV : OUT STD_LOGIC
   );
-end entity;
+END ENTITY;
 
-architecture behavioural of RX is
-  component CU_RX IS
+ARCHITECTURE BEHAVIOURAL OF RX IS
+  COMPONENT CU_RX IS
   	PORT(CLOCK          : IN STD_LOGIC;
            RST            : IN STD_LOGIC;
   		 S_BIT          : IN STD_LOGIC;
@@ -24,42 +24,42 @@ architecture behavioural of RX is
   		 BAUD_END       : IN  STD_LOGIC;
   		 FRAME_EN       : OUT STD_LOGIC;
   		 FRAME_END      : IN STD_LOGIC;
-       frame_rst : out std_logic;
+       FRAME_RST : OUT STD_LOGIC;
   	     ENABLE_INPUT   : OUT STD_LOGIC;
   		 ENABLE_OUTPUT  : OUT STD_LOGIC
   	);
-  END component;
+  END COMPONENT;
 
-  component DP is
-    port (
-    RX : in std_logic;
-    rst :  in std_logic;
-    clock : in std_logic;
-    eninput : in std_logic;
-    startbit : out std_logic;
-    en_out_reg : in std_logic;
-    dataout : out std_logic_vector(7 downto 0);
-    baud_en : in std_logic;
-    baud_end : out std_logic;
-    frame_en : in std_logic;
-    frame_end : out std_logic;
-    frame_rst : in std_logic
+  COMPONENT DP IS
+    PORT (
+    RX : IN STD_LOGIC;
+    RST :  IN STD_LOGIC;
+    CLOCK : IN STD_LOGIC;
+    ENINPUT : IN STD_LOGIC;
+    STARTBIT : OUT STD_LOGIC;
+    EN_OUT_REG : IN STD_LOGIC;
+    DATAOUT : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    BAUD_EN : IN STD_LOGIC;
+    BAUD_END : OUT STD_LOGIC;
+    FRAME_EN : IN STD_LOGIC;
+    FRAME_END : OUT STD_LOGIC;
+    FRAME_RST : IN STD_LOGIC
     );
-  end component;
+  END COMPONENT;
 
-  signal eninput : std_logic;
-  signal startbit : std_logic;
-  signal en_out_reg : std_logic;
-  signal  baud_en : std_logic;
-  signal baud_end : std_logic;
-  signal  frame_en : std_logic;
-  signal frame_end : std_logic;
-  signal dp_reset : std_logic;
-  signal frame_rst : std_logic;
+  SIGNAL ENINPUT : STD_LOGIC;
+  SIGNAL STARTBIT : STD_LOGIC;
+  SIGNAL EN_OUT_REG : STD_LOGIC;
+  SIGNAL  BAUD_EN : STD_LOGIC;
+  SIGNAL BAUD_END : STD_LOGIC;
+  SIGNAL  FRAME_EN : STD_LOGIC;
+  SIGNAL FRAME_END : STD_LOGIC;
+  SIGNAL DP_RESET : STD_LOGIC;
+  SIGNAL FRAME_RST : STD_LOGIC;
 
-begin
+BEGIN
 
-  dadatapath : dp port map(rx, dp_reset, clk, eninput, startbit, en_out_reg, data, baud_en, baud_end, frame_en, frame_end, frame_rst);
-  control_unit : cu_RX port map(clk, rst, startbit, dav, dp_reset, rd, baud_en, baud_end, frame_en, frame_end, frame_rst, eninput, en_out_reg);
+  DADATAPATH : DP PORT MAP(RX, DP_RESET, CLK, ENINPUT, STARTBIT, EN_OUT_REG, DATA, BAUD_EN, BAUD_END, FRAME_EN, FRAME_END, FRAME_RST);
+  CONTROL_UNIT : CU_RX PORT MAP(CLK, RST, STARTBIT, DAV, DP_RESET, RD, BAUD_EN, BAUD_END, FRAME_EN, FRAME_END, FRAME_RST, ENINPUT, EN_OUT_REG);
 
-end architecture;
+END ARCHITECTURE;

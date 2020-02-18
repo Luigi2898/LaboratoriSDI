@@ -1,17 +1,17 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
-entity StartBitFinder is
-  port (
-    frame : in std_logic_vector(7 downto 0);
-    startbit : out std_logic
+ENTITY STARTBITFINDER IS
+  PORT (
+    FRAME : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    STARTBIT : OUT STD_LOGIC
   );
-end entity;
+END ENTITY;
 
-architecture behavioural of StartBitFinder is
+ARCHITECTURE BEHAVIOURAL OF STARTBITFINDER IS
 
-  begin
+  BEGIN
 
-  startbit <= frame(3) and frame(2) and frame(1) and frame(0) and not(frame(7)) and not(frame(6)) and not(frame(5)) and not(frame(4));
+  STARTBIT <= FRAME(3) AND FRAME(2) AND FRAME(1) AND FRAME(0) AND NOT(FRAME(7)) AND NOT(FRAME(6)) AND NOT(FRAME(5)) AND NOT(FRAME(4));
 
-end architecture;
+END ARCHITECTURE;

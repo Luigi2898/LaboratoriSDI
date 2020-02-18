@@ -9,7 +9,7 @@ entity PeakNoticer is
     signa   : in signed(27 downto 0);  --input signal
     DAV     : in std_logic;
     restart : in std_logic;            --start
-    peak    : out std_logic;           --notifies that the treshold is overcome
+    peak    : out std_logic;           --notifies that the treshold has been overcome
     -- debug signals
     energy : out signed(66 downto 0); --outputs computed energy
     calc   : out std_logic            --notifies that an energy has been computed
@@ -100,38 +100,7 @@ begin
 
   state_transition : process(clk)
   begin
---    if (clk'event and clk = '1') then
-    --  if (rstN = '0') then
-      --  st <= RST_S;
-    --  else
-      --  case (st) is
-        --  when RST_S =>
-          --  if (start = '1') then
-            --  st <= MEASURE;
-            --else
-            --  st <= RST_S;
-            --end if;
-          --when MEASURE =>
-            --if (cnt_end = '1') then
-            --  st <= RST_S;
-            --elsif (cnt_end = '0' and cmp_out = '0') then
-              --st <= MEASURE;
-            --elsif (cmp_out = '1') then
-              --st <= FOUND_TH;
-            --else
-              --st <= RST_S;
-            --end if;
-          --when FOUND_TH =>
-            --if (start = '1') then
-              --st <= RST_S;
-            --else
-              --st <= FOUND_TH;
-            --end if;
-          --when others =>
-            --st <= RST_S;
-        --end case;
-      --end if;
-    --end if;
+
     if (clk'event and clk = '1') then
       if (rstN='0') then
         st <= RST_S;

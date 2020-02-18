@@ -1,112 +1,112 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
-entity UARTQP is
+ENTITY UARTQP IS
 
-	port(
-		SW : in std_logic_vector(9 downto 0);
-		GPIO_0 : out std_logic_vector(35 downto 0);
-		KEY : in std_logic_vector(3 downto 0);
-		LEDR : out std_logic_vector(9 downto 0);
-		CLOCK_50 : in std_logic
+	PORT(
+		SW : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+		GPIO_0 : OUT STD_LOGIC_VECTOR(35 DOWNTO 0);
+		KEY : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+		LEDR : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+		CLOCK_50 : IN STD_LOGIC
 	);
 
-end entity;
+END ENTITY;
 
-architecture beh of UARTQP is
+ARCHITECTURE BEH OF UARTQP IS
 
-  component UART is
+  COMPONENT UART IS
 
-    port(
-      data_in  : in std_logic_vector (7 downto 0);
-      tx_pin       : out std_logic;
-      tx_ready : out std_logic;
-      wr       : in std_logic;
+    PORT(
+      DATA_IN  : IN STD_LOGIC_VECTOR (7 DOWNTO 0);
+      TX_PIN       : OUT STD_LOGIC;
+      TX_READY : OUT STD_LOGIC;
+      WR       : IN STD_LOGIC;
 
-      data_out : out std_logic_vector (7 downto 0);
-      rx_pin       : in std_logic;
-      rd       : in std_logic;
-      dav      : out std_logic;
+      DATA_OUT : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+      RX_PIN       : IN STD_LOGIC;
+      RD       : IN STD_LOGIC;
+      DAV      : OUT STD_LOGIC;
 
-      clock    : in std_logic;
-      resetN   : in std_logic
+      CLOCK    : IN STD_LOGIC;
+      RESETN   : IN STD_LOGIC
     );
 
-  end component;
+  END COMPONENT;
 
 
-component pll is
-	port (
-		refclk   : in  std_logic := '0'; --  refclk.clk
-		rst      : in  std_logic := '0'; --   reset.reset
-		outclk_0 : out std_logic;        -- outclk0.clk
-		locked   : out std_logic         --  locked.export
+COMPONENT PLL IS
+	PORT (
+		REFCLK   : IN  STD_LOGIC := '0'; --  REFCLK.CLK
+		RST      : IN  STD_LOGIC := '0'; --   RESET.RESET
+		OUTCLK_0 : OUT STD_LOGIC;        -- OUTCLK0.CLK
+		LOCKED   : OUT STD_LOGIC         --  LOCKED.EXPORT
 	);
-end component pll;
+END COMPONENT PLL;
 
-component RisingEdge_DFlipFlop is
-   port(
-      Q : out std_logic;
-      Clk :in std_logic;
-      D :in  std_logic
+COMPONENT RISINGEDGE_DFLIPFLOP IS
+   PORT(
+      Q : OUT STD_LOGIC;
+      CLK :IN STD_LOGIC;
+      D :IN  STD_LOGIC
    );
-end component RisingEdge_DFlipFlop;
+END COMPONENT RISINGEDGE_DFLIPFLOP;
 
-  signal tx, rd                    : std_logic;
-  signal tx_ready  : std_logic;
+  SIGNAL TX, RD                    : STD_LOGIC;
+  SIGNAL TX_READY  : STD_LOGIC;
 
-  signal wr : std_logic ;
+  SIGNAL WR : STD_LOGIC ;
 
-  signal d, d1 : std_logic;
-  signal q, q1 : std_logic;
+  SIGNAL D, D1 : STD_LOGIC;
+  SIGNAL Q, Q1 : STD_LOGIC;
 
-  signal clock, outclk_0, locked  : std_logic;
-  signal resetN1, resetN2      : std_logic;
+  SIGNAL CLOCK, OUTCLK_0, LOCKED  : STD_LOGIC;
+  SIGNAL RESETN1, RESETN2      : STD_LOGIC;
 
-begin
+BEGIN
 
-  UART1 : UART port map (sw(7 downto 0), tx, GPIO_0(8), wr, LEDR(7 downto 0), tx, rd, GPIO_0(16), outclk_0, KEY(2));
-  GPIO_0(2) <= outclk_0;
-  GPIO_0(34) <= wr;
-  GPIO_0(22) <= tx;
-  GPIO_0(10) <= rd;
+  UART1 : UART PORT MAP (SW(7 DOWNTO 0), TX, GPIO_0(8), WR, LEDR(7 DOWNTO 0), TX, RD, GPIO_0(16), OUTCLK_0, KEY(2));
+  GPIO_0(2) <= OUTCLK_0;
+  GPIO_0(34) <= WR;
+  GPIO_0(22) <= TX;
+  GPIO_0(10) <= RD;
   --GPIO_0(10) <= KEY(2);
 
-  pllll : pll port map(CLOCK_50, not(KEY(2)), outclk_0, locked);
+  PLLLL : PLL PORT MAP(CLOCK_50, NOT(KEY(2)), OUTCLK_0, LOCKED);
 
-  ff : RisingEdge_DFlipFlop port map(q, outclk_0, d);
-  ff1 : RisingEdge_DFlipFlop port map(q1, outclk_0, d1);
+  FF : RISINGEDGE_DFLIPFLOP PORT MAP(Q, OUTCLK_0, D);
+  FF1 : RISINGEDGE_DFLIPFLOP PORT MAP(Q1, OUTCLK_0, D1);
 
-  keypropc1 : process(key(0), outclk_0)
+  KEYPROPC1 : PROCESS(KEY(0), OUTCLK_0)
 
-  begin
-	if(key(0)'event and key(0) = '0') then
-		if (outclk_0 = '1') then
-			wr <= '1';
-			d <= '1';
-		end if;
-	end if;
-	if(outclk_0 = '1' and q = '1') then
-		wr <= '0';
-		d <= '0';
-	end if;
-  end process;
+  BEGIN
+	IF(KEY(0)'EVENT AND KEY(0) = '0') THEN
+		IF (OUTCLK_0 = '1') THEN
+			WR <= '1';
+			D <= '1';
+		END IF;
+	END IF;
+	IF(OUTCLK_0 = '1' AND Q = '1') THEN
+		WR <= '0';
+		D <= '0';
+	END IF;
+  END PROCESS;
 
-  keypropc2 : process(key(1), outclk_0)
+  KEYPROPC2 : PROCESS(KEY(1), OUTCLK_0)
 
-  begin
-	if(key(1)'event and key(1) = '0') then
-		if (outclk_0 = '1') then
-			rd <= '1';
-			d1 <= '1';
-		end if;
-	end if;
-	if(outclk_0 = '1' and q1 = '1') then
-		rd <= '0';
-		d1 <= '0';
-	end if;
-  end process;
+  BEGIN
+	IF(KEY(1)'EVENT AND KEY(1) = '0') THEN
+		IF (OUTCLK_0 = '1') THEN
+			RD <= '1';
+			D1 <= '1';
+		END IF;
+	END IF;
+	IF(OUTCLK_0 = '1' AND Q1 = '1') THEN
+		RD <= '0';
+		D1 <= '0';
+	END IF;
+  END PROCESS;
 
 
 
-end architecture;
+END ARCHITECTURE;

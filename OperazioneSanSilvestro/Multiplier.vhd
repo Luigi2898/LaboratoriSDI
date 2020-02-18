@@ -21,9 +21,11 @@ architecture behavioural of Multiplier is
 begin
 --FIXME AGGIUNGERE RESET!!!!!!!!
   mult <= In1 * In2;
-  shift(0) <= '0';
-  shift(Nbit downto 1) <= In1;
-  shift(2 * Nbit - 1 downto Nbit + 1) <= (others => In1(Nbit - 1));
+  shift(2 * Nbit - 1 downto Nbit) <= In1(Nbit - 1 downto 0);
+  sihft(Nbit - 1 downto 0) <= (others => '0');
+  --shift(0) <= '0';
+  --shift(Nbit downto 1) <= In1;
+  --shift(2 * Nbit - 1 downto Nbit + 1) <= (others => In1(Nbit - 1));
 
   mult_proc : process(clk)
   begin
@@ -32,5 +34,6 @@ begin
       mult_s <= mult_f;
     end if;
   end process;
+
   Res <= mult_s(Nbit*2 - 2 downto 0) when Mult2 = '0' else shift(Nbit*2 - 2 downto 0) when Mult2 = '1';
 end architecture;

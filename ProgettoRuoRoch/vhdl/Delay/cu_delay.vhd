@@ -25,7 +25,7 @@ END ENTITY;
 
 ARCHITECTURE BEH OF CU_DELAY IS
 
-TYPE STATE_TYPE IS (IDLE, FIRST_RX, FIRST_SX, SECOND_RX, SECOND_SX, EQUAL, CALC_DELAY, TRANSMIT);
+TYPE STATE_TYPE IS (IDLE, FIRST_DX, FIRST_SX, SECOND_DX, SECOND_SX, EQUAL, CALC_DELAY, TRANSMIT);
 SIGNAL STATE: STATE_TYPE;
 
 BEGIN
@@ -37,22 +37,22 @@ IF(RST = '0') THEN
 	ELSIF(CLK'EVENT AND CLK = '1') THEN
 		CASE(STATE) IS
 		WHEN IDLE=>  IF(PEAK1 = '1' AND PEAK2 = '0') THEN
-						     STATE <= FIRST_RX;
+						     STATE <= FIRST_DX;
 						     ELSIF(PEAK1 = '0' AND PEAK2 = '1') THEN
 						     STATE <= FIRST_SX;
                  elsif (PEAK1 = '1' AND PEAK2 = '1') then
                   STATE <= EQUAL;
 						     ELSE STATE <= IDLE;
 						     END IF;
-		WHEN FIRST_RX =>     IF(PEAK2 = '1') THEN
+		WHEN FIRST_DX =>     IF(PEAK2 = '1') THEN
 						     STATE <= SECOND_SX;
-						     ELSE STATE <= FIRST_RX;
+						     ELSE STATE <= FIRST_DX;
 						     END IF;
 		WHEN FIRST_SX =>     IF(PEAK1 = '1') THEN
-						     STATE <= SECOND_RX;
+						     STATE <= SECOND_DX;
 						     ELSE STATE <= FIRST_SX;
 						     END IF;
-    WHEN SECOND_RX => STATE <= CALC_DELAY;
+    WHEN SECOND_DX => STATE <= CALC_DELAY;
     WHEN SECOND_SX => STATE <= CALC_DELAY;
     WHEN EQUAL => STATE <= TRANSMIT;
 		WHEN CALC_DELAY =>   STATE <= TRANSMIT;
@@ -84,7 +84,7 @@ CASE (STATE) IS
     RST_CNT_DELAY <= '0';
     RST_FIRST <= '0';
     RST_SECOND <= '0';
-    WHEN FIRST_RX =>
+    WHEN FIRST_DX =>
 	RST_FIRST <= '0';
     EN_CNT_DELAY <= '1';
     WHEN FIRST_SX =>
@@ -92,19 +92,16 @@ CASE (STATE) IS
     EN_CNT_DELAY <= '1';
     WHEN SECOND_SX =>
     EN_SECOND <= '1';
-    WHEN SECOND_RX =>
+    WHEN SECOND_DX =>
     EN_FIRST <= '1';
     WHEN CALC_DELAY =>
 	EN_DELAY_OUT <= '1';
     WHEN EQUAL =>
     SIMULTANEOUS <= '1';
-    WHEN TRANSMIT => if(simultaneous = '1') then
-	                 DONE <= '1';
-					 RESTART      <= '1';
-					 simultaneous <= '1';
-					 else done <= '1';
-					      RESTART <= '1';
-					 end if;
+    WHEN TRANSMIT =>
+    done <= '1';
+		RESTART <= '1';
+
 END CASE;
 END PROCESS;
 

@@ -1,77 +1,82 @@
-library ieee;
-  use ieee.std_logic_1164.all;
-  use ieee.NUMERIC_STD.all;
+LIBRARY IEEE;
+  USE IEEE.STD_LOGIC_1164.ALL;
+  USE IEEE.NUMERIC_STD.ALL;
 
-entity DP is
-  port (
-  RX : in std_logic;
-  rst :  in std_logic;
-  clock : in std_logic;
-  eninput : in std_logic;
-  startbit : out std_logic;
-  en_out_reg : in std_logic;
-  dataout : out std_logic_vector(7 downto 0);
-  baud_en : in std_logic;
-  baud_end : out std_logic;
-  frame_en : in std_logic;
-  frame_end : out std_logic;
-  frame_rst : in std_logic
+--DATAPATH RX
+
+ENTITY DP IS
+  PORT (RX         : IN  STD_LOGIC;
+        RST        : IN  STD_LOGIC;
+        CLOCK      : IN  STD_LOGIC;
+        ENINPUT    : IN  STD_LOGIC;
+        STARTBIT   : OUT STD_LOGIC;
+        EN_OUT_REG : IN  STD_LOGIC;
+        DATAOUT    : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        BAUD_EN    : IN  STD_LOGIC;
+        BAUD_END   : OUT STD_LOGIC;
+        FRAME_EN   : IN  STD_LOGIC;
+        FRAME_END  : OUT STD_LOGIC;
+        FRAME_RST  : IN  STD_LOGIC
   );
-end entity;
+END ENTITY;
 
-architecture behavioural of DP is
+ARCHITECTURE BEHAVIOURAL OF DP IS
 
-  component N_COUNTER IS
-  		GENERIC(N : INTEGER:= 12; MODULE : INTEGER:= 2604);
-  		PORT(CLK : IN STD_LOGIC;
-  			 EN  : IN STD_LOGIC;
-  			 RST : IN STD_LOGIC;
-  			 CNT_END : OUT STD_LOGIC;
-  			 CNT_OUT : BUFFER UNSIGNED(N-1 DOWNTO 0)
+  COMPONENT N_COUNTER IS
+  		GENERIC(N      : INTEGER:= 12;
+              MODULE : INTEGER:= 2604);
+  		PORT(CLK     : IN STD_LOGIC;
+  			   EN      : IN STD_LOGIC;
+  			   RST     : IN STD_LOGIC;
+  			   CNT_END : OUT STD_LOGIC;
+  			   CNT_OUT : BUFFER UNSIGNED(N-1 DOWNTO 0)
   		);
-  END component;
+  END COMPONENT;
 
-  component SERIAL2PARALLEL IS
-  GENERIC(N:integer);
+  COMPONENT SERIAL2PARALLEL IS
+  GENERIC(N : INTEGER);
   	PORT(CLK        : IN STD_LOGIC;
-  		 RST        : IN STD_LOGIC;
-  		 EN         : IN STD_LOGIC;
-  		 SERIAL_D   : IN STD_LOGIC;
-  		 PARALLEL_D : BUFFER STD_LOGIC_VECTOR(N-1 DOWNTO 0)
+  		   RST        : IN STD_LOGIC;
+  		   EN         : IN STD_LOGIC;
+  		   SERIAL_D   : IN STD_LOGIC;
+  		   PARALLEL_D : BUFFER STD_LOGIC_VECTOR(N-1 DOWNTO 0)
   	);
-  END component;
+  END COMPONENT;
 
-  component StartBitFinder is
-    port (
-      frame : in std_logic_vector(7 downto 0);
-      startbit : out std_logic
+  COMPONENT STARTBITFINDER IS
+    PORT (
+      FRAME : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+      STARTBIT : OUT STD_LOGIC
     );
-  end component;
+  END COMPONENT;
 
-  component voter is
-    port (
-
-    in1 : in std_logic;
-    in2 : in std_logic;
-    in3 : in std_logic;
-    winner : out std_logic
-
+  COMPONENT VOTER IS
+    PORT (
+    IN1 : IN STD_LOGIC;
+    IN2 : IN STD_LOGIC;
+    IN3 : IN STD_LOGIC;
+    WINNER : OUT STD_LOGIC
     );
-  end component;
+  END COMPONENT;
 
-  signal baud_count_out : UNSIGNED(11 downto 0);
-  signal frame_count_out : UNSIGNED(2 downto 0);
-  signal to_logic : std_logic_vector(7 downto 0);
-  signal vote : std_logic;
-  signal in1, in2, in3 : std_logic;
+  SIGNAL BAUD_COUNT_OUT  : UNSIGNED(11 DOWNTO 0);
+  SIGNAL FRAME_COUNT_OUT : UNSIGNED(2 DOWNTO 0);
+  SIGNAL TO_LOGIC        : STD_LOGIC_VECTOR(7 DOWNTO 0);
+  SIGNAL VOTE            : STD_LOGIC;
+  SIGNAL IN1, IN2, IN3   : STD_LOGIC;
 
-begin
-  baud_counter : n_counter GENERIC MAP(12, 2604) port map(clock, baud_en, rst, baud_end, baud_count_out);
-  frame_counter : n_counter GENERIC MAP(3 , 7) port map(clock, frame_en, frame_rst, frame_end, frame_count_out);
-  input_reg : SERIAL2PARALLEL GENERIC MAP(8) port map(clock, rst, eninput, Rx, to_logic);
-  output_reg : SERIAL2PARALLEL GENERIC MAP(8) PORT MAP(clock, rst, en_out_reg , vote , dataout);
-  votatore : voter Port map(to_logic(3), to_logic(4), to_logic(5), vote);
-  s_bit_f : StartBitFinder port map(to_logic, startbit);
+BEGIN
 
+  BAUD_COUNTER  : N_COUNTER       GENERIC MAP(12, 2604)
+                                  PORT MAP(CLOCK, BAUD_EN, RST, BAUD_END, BAUD_COUNT_OUT);
+  FRAME_COUNTER : N_COUNTER       GENERIC MAP(3, 7)
+                                  PORT MAP(CLOCK, FRAME_EN, FRAME_RST, FRAME_END, FRAME_COUNT_OUT);
+  INPUT_REG     : SERIAL2PARALLEL GENERIC MAP(8)
+                                  PORT MAP(CLOCK, RST, ENINPUT, RX, TO_LOGIC);
+  OUTPUT_REG    : SERIAL2PARALLEL GENERIC MAP(8)
+                                  PORT MAP(CLOCK, RST, EN_OUT_REG , VOTE , DATAOUT);
+  VOTATORE      : VOTER           PORT MAP(TO_LOGIC(3), TO_LOGIC(4), TO_LOGIC(5), VOTE);
 
-end architecture;
+  S_BIT_F       : STARTBITFINDER  PORT MAP(TO_LOGIC, STARTBIT);
+
+END ARCHITECTURE;

@@ -17,7 +17,7 @@ architecture arch of testbench_PeakNoticer is
     DAV     : in std_logic;
     restart  : in  std_logic;
     peak   : out std_logic;
-    energy : out signed(55 downto 0);
+    energy : out signed(66 downto 0);
     calc   : out std_logic
   );
   end component PeakNoticer;
@@ -27,7 +27,7 @@ architecture arch of testbench_PeakNoticer is
   signal data_i : signed(27 downto 0);
   signal start  : std_logic;
   signal peak   : std_logic;
-  signal energy : signed(55 downto 0);
+  signal energy : signed(66 downto 0);
   signal calc, dav   : std_logic;
 
 begin

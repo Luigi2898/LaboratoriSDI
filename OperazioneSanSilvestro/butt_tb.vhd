@@ -11,9 +11,12 @@ architecture arch of butt_tb is
     port (
     clk : in std_logic;
     rst : in std_logic;
-    In1, In2 : in signed(23 downto 0);
+    Ai, Ar    : IN SIGNED(23 DOWNTO 0);
+    Bi, Br    : IN SIGNED(23 DOWNTO 0);
+    Wi, Wr    : IN SIGNED(23 DOWNTO 0);
     start : in std_logic;
-    out1 : out signed(46 downto 0);
+    Aip, Arp : out signed(46 downto 0);
+    Bip, Brp : out signed(46 downto 0);
     start_next : out std_logic;
     done : out std_logic
     );
@@ -21,9 +24,7 @@ architecture arch of butt_tb is
 
   signal clk : std_logic;
   signal rst :  std_logic;
-  signal In1, In2 : signed(23 downto 0);
   signal start : std_logic;
-  signal out1 : signed(46 downto 0);
   signal start_next :  std_logic;
   signal done : std_logic;
   signal cinque : integer := 5;
@@ -33,10 +34,12 @@ architecture arch of butt_tb is
   signal nove : integer := 9;
   signal dieci : integer := 10;
   signal zero : integer := 0;
+  signal Ai, Ar, Bi, Br, Wi, Wr : signed(23 downto 0);
+  signal Aip, Arp, Bip, Brp : signed(46 downto 0);
 
 begin
 
-  butt : Butterfly port map(clk, rst, In1, In2, start, out1, start_next, done);
+  butt : Butterfly port map(clk, rst, Ai, Ar, Bi, Br, Wi, Wr, start, Aip, Arp, Bip, Brp, start_next, done);
 
   clk_p : process
   begin
@@ -70,32 +73,19 @@ end process;
 
 in_p : process
 begin
-  in1 <= to_signed(zero, 24);
-  in2 <= to_signed(zero, 24);
-  wait for 40 ns;
-  in1 <= to_signed(cinque, 24);
-  in2 <= to_signed(zero, 24);
-  wait for 10 ns;
-  in1 <= to_signed(sette, 24);
-  in2 <= to_signed(nove, 24);
-  wait for 10 ns;
-  in1 <= to_signed(sei, 24);
-  in2 <= to_signed(nove, 24);
-  wait for 10 ns;
-  in1 <= to_signed(otto, 24);
-  in2 <= to_signed(dieci, 24);
-  wait for 50 ns;
-  in1 <= to_signed(sei, 24);
-  in2 <= to_signed(zero, 24);
-  wait for 10 ns;
-  in1 <= to_signed(otto, 24);
-  in2 <= to_signed(dieci, 24);
-  wait for 10 ns;
-  in1 <= to_signed(nove, 24);
-  in2 <= to_signed(dieci, 24);
-  wait for 10 ns;
-  in1 <= to_signed(cinque, 24);
-  in2 <= to_signed(sette, 24);
+  Ar <= to_signed(cinque, 24);
+  Ai <= to_signed(sei, 24);
+  Br <= to_signed(sette, 24);
+  Bi <= to_signed(otto, 24);
+  Wr <= to_signed(nove, 24);
+  Wi <= to_signed(dieci, 24);
+  wait for 120 ns;
+  Ar <= to_signed(sei, 24);
+  Ai <= to_signed(nove, 24);
+  Br <= to_signed(otto, 24);
+  Bi <= to_signed(cinque, 24);
+  Wr <= to_signed(dieci, 24);
+  Wi <= to_signed(sette, 24);
   wait;
 end process;
 

@@ -1,53 +1,53 @@
-library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
-entity UART is
-  
-  port(
-    data_in  : in std_logic_vector (7 downto 0);
-    tx_pin       : out std_logic;
-    tx_ready : out std_logic;
-    wr       : in std_logic;
-    
-    data_out : out std_logic_vector (7 downto 0);
-    rx_pin       : in std_logic;
-    rd       : in std_logic;
-    dav      : out std_logic;
-    
-    clock    : in std_logic;
-    resetN   : in std_logic
+ENTITY UART IS
+
+  PORT(
+    DATA_IN  : IN STD_LOGIC_VECTOR (7 DOWNTO 0);
+    TX_PIN   : OUT STD_LOGIC;
+    TX_READY : OUT STD_LOGIC;
+    WR       : IN STD_LOGIC;
+
+    DATA_OUT : OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
+    RX_PIN   : IN STD_LOGIC;
+    RD       : IN STD_LOGIC;
+    DAV      : OUT STD_LOGIC;
+
+    CLOCK    : IN STD_LOGIC;
+    RESETN   : IN STD_LOGIC
     );
-  
-end entity;
+
+END ENTITY;
  
-architecture Behavioural of UART is
-  
-  component RX is
-    port (
-      clk : in std_logic;
-      rst : in std_logic;
-      rx : in std_logic;
-      rd : in std_logic;
-      data : out std_logic_vector(7 downto 0);
-      dav : out std_logic
+ARCHITECTURE BEHAVIOURAL OF UART IS
+
+  COMPONENT RX IS
+    PORT (
+      CLK  : IN STD_LOGIC;
+      RST  : IN STD_LOGIC;
+      RX   : IN STD_LOGIC;
+      RD   : IN STD_LOGIC;
+      DATA : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+      DAV  : OUT STD_LOGIC
     );
-  end component;
-  
-  component TX IS
+  END COMPONENT;
+
+  COMPONENT TX IS
 	 PORT(
      CLOCK       : IN STD_LOGIC;
 		 RST         : IN STD_LOGIC;
 		 DATA_IN     : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
 		 TX          : OUT STD_LOGIC;
 		 DATA_VALID  : IN STD_LOGIC;
-		 TXREADY     : OUT STD_LOGIC	
+		 TXREADY     : OUT STD_LOGIC
 	 );
-  END component;
-  
-  begin
-    
-    Receiver    : RX port map(clock, resetN, rx_pin, rd, data_out, dav);
-    Transmitter : TX port map(clock, resetN, data_in, tx_pin, wr, tx_ready);
-  
-    
-end architecture;
+  END COMPONENT;
+
+  BEGIN
+
+    RECEIVER    : RX PORT MAP(CLOCK, RESETN, RX_PIN, RD, DATA_OUT, DAV);
+    TRANSMITTER : TX PORT MAP(CLOCK, RESETN, DATA_IN, TX_PIN, WR, TX_READY);
+
+
+END ARCHITECTURE;
