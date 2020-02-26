@@ -30,7 +30,6 @@ architecture arch of board is
 	);
     END COMPONENT;
 
-
     component compute_delay
     port (
       clk          : in  std_logic;
@@ -85,14 +84,14 @@ port (
 );
 end component UART;
 
-component RisingEdge_DFlipFlop_reset
+component SRFF
 port (
-  Q   : out std_logic;
-  Clk : in  std_logic;
-  D   : in  std_logic;
-  reset : in std_logic
+  clk : in  std_logic;
+  S   : in  std_logic;
+  r   : in  std_logic;
+  q   : out std_logic
 );
-end component RisingEdge_DFlipFlop_reset;
+end component SRFF;
 
 component GENERICS_MUX
 generic (
@@ -145,51 +144,40 @@ end component GENERICS_MUX;
   begin
 
 
-  FRONT_END : MIC_FRONT_END PORT MAP(clock_10n, clock_mic, RST, START_SX, START_DX);
+  FRONT_END : MIC_FRONT_END port map(clock_10n, clock_mic, RST, START_SX, START_DX);
+  sx_fil    : DECIMATOR_FIR port map(clock_10n, rst, start_sx, pdm_mic, FILTER_OUTsx, FILT_VALIDsx);
+  dx_fil    : DECIMATOR_FIR port map(clock_10n, rst, start_dx, pdm_mic, FILTER_OUTdx, FILT_VALIDdx);
+  pnsx      : PeakNoticer port map(clock_10n, rst, FILTER_OUTsx, FILT_VALIDsx, restart, peaksx, energysx, calcsx);
+  pndx      : PeakNoticer port map(clock_10n, rst, FILTER_OUTdx, FILT_VALIDdx, restart, peakdx, energydx, calcdx);
+  del       : compute_delay port map(clock_25n, rst, delay, msb, peakdx, peaksx, restart, SIMULTANEOUS, done);
+  SRFF1     : SRFF port map(clock_25n, done, reset_ff1, done_long);
+  SRFF2     : SRFF port map(clock_25n, msb, reset_ff2, msb_long);
+  srFF3     : SRFF port map(clock_25n, SIMULTANEOUS, reset_ff3, SIMULTANEOUS_long);
+  sy_mux    : generics_mux generic map(3, 8)
+                           port map(ins, int_sel, direction_sy);
+  UART_I    : UART port map(direction_sy, tx, tx_rdy, wr, data_out, rx_pin, rd, dav, clock_40n, rst);
 
-  sx_fil : DECIMATOR_FIR port map(clock_10n, rst, start_sx, pdm_mic, FILTER_OUTsx, FILT_VALIDsx);
-
-  dx_fil : DECIMATOR_FIR port map(clock_10n, rst, start_dx, pdm_mic, FILTER_OUTdx, FILT_VALIDdx);
-
-  pnsx : PeakNoticer port map(clock_10n, rst, FILTER_OUTsx, FILT_VALIDsx, restart, peaksx, energysx, calcsx);
-
-  pndx : PeakNoticer port map(clock_10n, rst, FILTER_OUTdx, FILT_VALIDdx, restart, peakdx, energydx, calcdx);
-
-  del : compute_delay port map(clock_25n, rst, delay, msb, peakdx, peaksx, restart, SIMULTANEOUS, done);
-
-  DFF1 : RisingEdge_DFlipFlop_reset port map(done_long, clock_25n, done, reset_ff1);
-
-  DFF2 : RisingEdge_DFlipFlop_reset port map(msb_long, clock_25n, msb, reset_ff2);
-
-  DFF3 : RisingEdge_DFlipFlop_reset port map(SIMULTANEOUS_long, clock_25n, SIMULTANEOUS, reset_ff3);
-
-  INS <= "01011000" & "01000100" & "01010011"; --X D S
-
+  INS     <= "01011000" & "01000100" & "01010011"; --X D S
   int_sel <= to_integer(unsigned(symbol_mux));
-
-  sy_mux : generics_mux generic map(3, 8)
-                        port map(ins, int_sel, direction_sy);
 
   UART_cmd : process(clock_40n)
   begin
     if (clock_40n'event and clock_40n = '1') then
-      reset_ff1 <= '0';
-      reset_ff2 <= '0';
-      reset_ff3 <= '1';
-      wr <= '0';
+      reset_ff1  <= '0';
+      reset_ff2  <= '0';
+      reset_ff3  <= '0';
+      wr         <= '0';
       symbol_mux <= "00";
     if (done_long = '1') then
       reset_ff1 <= '1';
       if (tx_rdy = '1') then
-        wr <= '1';
+        wr         <= '1';
         symbol_mux <= SIMULTANEOUS_long & msb_long;
-        reset_ff2 <= '1';
-        reset_ff3 <= '1';
+        reset_ff2  <= '1';
+        reset_ff3  <= '1';
       end if;
     end if;
   end if;
   end process;
-
-  UART_I : UART port map(direction_sy, tx, tx_rdy, wr, data_out, rx_pin, rd, dav, clock_40n, rst);
 
 end architecture;
