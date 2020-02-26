@@ -186,7 +186,7 @@ begin
   add         : ADD_SUB generic map(67)
                         port map(square_out_ext, present_energy, next_energy, add_sub_c);
 
-  treshold <= "0000001101111111010101100111110101111111001110101100001001010101000";
+  treshold <= "0000000001000101111011110111101100000101111001000101100000111001100";
 
   cmp         : comparator generic map(67)
                            port map (unsigned(present_energy), treshold, cmp_out);

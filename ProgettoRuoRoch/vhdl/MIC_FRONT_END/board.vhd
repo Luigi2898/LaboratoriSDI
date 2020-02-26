@@ -23,10 +23,10 @@ architecture arch of board is
 	COMPONENT MIC_FRONT_END IS
 	PORT(CLK_10N : IN STD_LOGIC;
 		 CLK_MIC : IN STD_LOGIC;
-		 RST     : IN STD_LOGIC;	
+		 RST     : IN STD_LOGIC;
 		 FF_OUT  : OUT STD_LOGIC;
 		 FF_OUT_NEG : OUT STD_LOGIC
-	
+
 	);
     END COMPONENT;
 
@@ -105,7 +105,7 @@ port (
   OUT_MUX : OUT std_logic_VECTOR(SIZE-1 DOWNTO 0)
 );
 end component GENERICS_MUX;
-	
+
 	signal start_dx, start_sx : std_logic;
     --signal pdm_in     : std_logic;
     --signal FILTER_OUTsx : signed(27 downto 0);
@@ -144,8 +144,8 @@ end component GENERICS_MUX;
 
   begin
 
-  
-  FRONT_END : MIC_FRONT_END PORT MAP(clock_10n, clock_mic, RST, START_DX, START_SX);
+
+  FRONT_END : MIC_FRONT_END PORT MAP(clock_10n, clock_mic, RST, START_SX, START_DX);
 
   sx_fil : DECIMATOR_FIR port map(clock_10n, rst, start_sx, pdm_mic, FILTER_OUTsx, FILT_VALIDsx);
 
@@ -163,7 +163,7 @@ end component GENERICS_MUX;
 
   DFF3 : RisingEdge_DFlipFlop_reset port map(SIMULTANEOUS_long, clock_25n, SIMULTANEOUS, reset_ff3);
 
-  INS <= "01011000" &"01000100" & "01010011"; --X D S
+  INS <= "01011000" & "01000100" & "01010011"; --X D S
 
   int_sel <= to_integer(unsigned(symbol_mux));
 
