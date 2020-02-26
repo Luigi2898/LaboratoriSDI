@@ -1,17 +1,12 @@
-file_out = open("PDM.txt","w")
-file_in_sx = open("PDMsx.txt", "r").readlines()
-file_in_dx = open("PDM_dx.txt", "r").readlines()
+file_out = open("PDM_1000.txt","w")
+file_in_sx = open("PDM_SX_1000.txt", "r").readlines()
+file_in_dx = open("PDM_DX_1000.txt", "r").readlines()
 
 i = 0
+
 while i < len(file_in_dx):
-    if file_in_dx[i] == -1:
-        file_out.write("0")
-    else:
-        file_out.write(file_in_dx[i])
-    if file_in_sx[i] == -1:
-        file_out.write("0")
-    else:
-        file_out.write(file_in_sx[i])
+    file_out.write(file_in_dx[i])
+    file_out.write(file_in_sx[i])
     i = i + 1
 
 file_out.close()
