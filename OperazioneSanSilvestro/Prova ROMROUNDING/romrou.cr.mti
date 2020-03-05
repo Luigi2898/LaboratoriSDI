@@ -1,0 +1,33 @@
+{C:/Users/luigi/Desktop/Prova ROMROUNDING/generic_rom.vhd} {1 {vcom -work work -2002 -explicit -stats=none {C:/Users/luigi/Desktop/Prova ROMROUNDING/generic_rom.vhd}
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity GENERIC_ROM
+-- Compiling architecture BEHAVIOURAL of GENERIC_ROM
+
+} {} {}} {C:/Users/luigi/Desktop/Prova ROMROUNDING/tb_ROMROU.vhd} {2 {vcom -work work -2002 -explicit -stats=none {C:/Users/luigi/Desktop/Prova ROMROUNDING/tb_ROMROU.vhd}
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package std_logic_textio
+-- Compiling entity tb_ROMROU
+-- Compiling architecture beh of tb_ROMROU
+** Warning: C:/Users/luigi/Desktop/Prova ROMROUNDING/tb_ROMROU.vhd(36): (vcom-1194) FILE declaration was written using VHDL 1987 syntax.
+
+** Warning: C:/Users/luigi/Desktop/Prova ROMROUNDING/tb_ROMROU.vhd(52): (vcom-1194) FILE declaration was written using VHDL 1987 syntax.
+
+
+} {} {}} {C:/Users/luigi/Desktop/Prova ROMROUNDING/poly_rom.vhd} {1 {vcom -work work -2002 -explicit -stats=none {C:/Users/luigi/Desktop/Prova ROMROUNDING/poly_rom.vhd}
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity POLY_ROM
+-- Compiling architecture BEH of POLY_ROM
+
+} {} {}}
